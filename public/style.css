@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&display=swap');
+
+.navBrand{
+  font-family: 'PT Sans', sans-serif;
+  margin-left: 10%;
+  font-size: 30px;
+}
+
+body{background-color: lightgray;}
+
+.navbar{background-color: #4267B2;}
+
+.logo{font-size: 35px;}
+
+.transparent{background-color: transparent}
+
+.icon{font-size: 20px;}
+
+.lightfont{font-weight: lighter;}
+
+.round{border-radius: 100px;}
+
+.lightgray{background-color:rgb(233, 233, 233)}
+
+.darkgray{background-color: darkgray;}
+
+.small{font-size: 14px;}
+
+.extra_small{font-size: 9px}
+
+.hid{overflow: hidden}
+
+.navitem:hover{background-color: #304a80;}
+
+/* .emoji_box{color: white;} */
+
+.emoji_box:hover{
+  background-color: lightgray;
+  color: black;
+}
+.searchform{
+  height: 35px;
+  overflow: hidden;
+}
+.full{
+  height: 88vh;
+  overflow-y: scroll
+}
+p{
+padding: 0;
+margin: 0
+}
+.messageBox{
+  height:78.5vh;
+  overflow: scroll;
+}
+
+/*scroll bar*/
+/* width */
+::-webkit-scrollbar {width: 5px;}
+
+/* Track */
+::-webkit-scrollbar-track {background-color: transparent}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888;
+border-radius: 100px
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {background: #555;}
+
+

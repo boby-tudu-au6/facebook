@@ -1,0 +1,92 @@
+.navbar{
+    background-color: #4267B2;
+}
+.logo{
+    font-size: 30px;
+}
+.form{
+    height: 35px;
+    overflow: hidden;
+}
+.full{
+    height: 88vh;
+    overflow-y: scroll
+}
+.round{
+    border-radius: 100px;
+}
+
+.lightgray{
+    background-color: rgb(235,235,235);
+}
+.small{
+    font-size: 14px;
+}
+.extra_small{
+  font-size: 9px
+}
+.hid{
+  overflow: hidden
+}
+p{
+  padding: 0;
+  margin: 0
+}
+.transparent{
+  background-color: transparent
+}
+.form-control ::placeholder{
+  color: red;
+  display: none
+}
+
+
+/*scroll bar*/
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background-color: transparent
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 100px
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
