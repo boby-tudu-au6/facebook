@@ -5,13 +5,16 @@ import Home from './comp/home/Home'
 import {BrowserRouter as Router, Switch,Route} from 'react-router-dom'
 import Chat from './comp/friend/Chat';
 import Login from './comp/login/Login';
+import { connect } from 'react-redux';
+import {checkLogin} from './redux/action/action'
 
 
-function App() {
+function App(props) {
+  checkLogin()
   return (
     <Router>
     <div>
-      <Nav/>
+      {props.username!==null?<Nav/>:<Login/>}
       <Switch>
         <Route exact path='/' component={Home}/>
         <Route exact path='/messages' component={Chat}/>
@@ -21,4 +24,6 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = state =>{return {...state}}
+
+export default connect(mapStateToProps)(App)

@@ -5,7 +5,7 @@ import RegularPost from './RegularPost'
 export default class SecondColumn extends Component {
     render() {
         return (
-            <div class="col-6 full">
+            <div className="col-6 full">
                 <CreatePost/>
                 <RegularPost/>
                 <RegularPost/>

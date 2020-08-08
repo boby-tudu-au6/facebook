@@ -1,46 +1,95 @@
 import React, { Component } from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {logout, checkLogin, searchFriend,setSocket, getRequest} from '../../redux/action/action'
+import {
+    logout, 
+    checkLogin, 
+    searchFriend,
+    setSocket, 
+    getRequest, 
+    updateRequest,
+    getFriend,
+    baseurl,
+    sendRequest,
+    setOnlineChat
+} from '../../redux/action/action'
 import io from 'socket.io-client'
 import Login from '../login/Login'
 import {DebounceInput} from 'react-debounce-input';
 import Axios from 'axios'
+import Badge from './Badge'
 
 class Nav extends Component {
     constructor(props) {
         super(props)
     
         this.state = {
-            userid:localStorage.getItem("userid")
+            userid:localStorage.getItem("userid"),
+            socket:io(baseurl,{userid:localStorage.getItem("userid")})
         }
-        this.socket = this.props.socket
     }
-    
+    componentWillUnmount(){
+        this.state.socket.close()
+    }
 
     async componentDidMount(){
         this.props.checkLogin()
-        const userid = localStorage.getItem('userid')
-        // this.props.socket.on("connect",()=>alert("connection made"))
-        this.props.socket.on("requestCreated",data=>{
+        const userid = localStorage.getItem("userid")
+        this.props.getRequest(userid)
+        this.state.socket.on('connect',()=>{
+            this.props.setSocket(this.state.socket)
+            this.props.socket.emit("updatesocketid",{userid})
+            this.props.getFriend()
+        })
+        this.state.socket.on("requestCreated",data=>{
             if(data.to===userid){
-                alert("request recieved")
+                this.props.getRequest(userid)
             }
         })
-        this.props.getRequest(userid)
+        this.state.socket.on("deletedRequest",data=>{
+            this.props.getRequest(userid)
+        })
+        this.state.socket.on("requestAccepted",data=>{
+            if(data.data.to===userid || data.data.from._id===userid){
+                this.props.getRequest(userid)
+                this.props.getFriend()
+            }
+        })
+        this.state.socket.on('imonline',data=>{
+            setTimeout(()=>this.props.getFriend(),2000)
+        })
+        this.state.socket.on("userDisconnected",data=>this.props.getFriend())
+        this.state.socket.on("chat",data=>{
+            // const loc = this.props.location.pathname
+            // if(loc!=='/messages'){
+            //     // this function is for new message notification
+            //     alert("new message")
+            // }
+            if(this.props.curChat!==null){
+                if(data.to===this.props.userid || data.from === this.props.userid){
+                    this.props.setOnlineChat(data)
+                }
+            }
+        })
     }
     sendRequest = (e)=>{
         e.preventDefault()
     }
     componentDidUpdate(){
-        const userid = localStorage.getItem("userid")
-        this.props.getRequest(userid)
+        // if(this.props.messages.lenght!==0){
+        //     const chats = this.props.messages.map(chat=>chat.unread==='true')
+        //     console.log(chats.length)
+        // }
     }
     render() {
-        
+        let chats=0;
+        if(this.props.messages.lenght!==0){
+            chats = this.props.messages.filter(chat=>chat.unread==='true')
+            console.log(chats)
+        }
         return (
             <div>
-                {this.props.user!==null?<nav className="navbar navbar-dark navbar-expand-sm pt-0 pb-0">
+                <nav className="navbar navbar-dark navbar-expand-sm pt-0 pb-0">
                 <Link className="navbar-brand logo" to='/'>
                     <i className="fab fa-facebook-square logo"></i>
                 </Link>
@@ -58,17 +107,24 @@ class Nav extends Component {
         </form>
         <div className='col-11 p-0 shadow rounded-bottom text-center justify-content-center bg-light' style={{position:"absolute",zIndex:"100",overflow:"hidden"}}>
         {this.props.searchResult!==null?this.props.searchResult.map(e=>{
+            let friend = false
+            let check = this.props.friendId.find(d=>d===e._id)
+            if(check!==undefined){friend=true}
             return (
-<div class="card bg-light text-dark text-center rounded-0 col-12 pl-4 pr-2">
-<div class="card-body p-2 row justify-content-between col-12">
+<div key={Math.random()} className="card bg-light text-dark text-center rounded-0 col-12 pl-4 pr-2">
+<div className="card-body p-2 row justify-content-between col-12">
 <p className='d-inline'>{`${e.firstname} ${e.lastname}`}</p>
 <div className='row btn-group'>
-<button 
+{friend===false?<button 
 className='btn btn-success btn-sm' 
 onClick={()=>{
-this.props.socket.emit("friendRequest",{to:e._id,from:this.state.userid,time:(new Date).toLocaleString})}}
->Send request</button>
-<button className='btn btn-danger btn-sm' onClick={()=>console.log((new Date).toLocaleString())}>Visit profile</button>
+    this.props.sendRequest()
+this.props.socket.emit("friendRequest",{to:e._id,from:this.state.userid,time:(new Date()).toLocaleString})}}
+>Send request</button>:
+<button
+className='btn btn-primary btn-sm'>View profile
+</button>}
+<button className='btn btn-danger btn-sm' onClick={()=>console.log((new Date()).toLocaleString())}>Visit profile</button>
 </div>
 </div>
 </div>)
@@ -87,24 +143,28 @@ this.props.socket.emit("friendRequest",{to:e._id,from:this.state.userid,time:(ne
             </div>
         </Link>
         <li className="nav-item col-1 p-1 rounded navitem text-center">
+            {this.props.friendRequest.length===0?null:<Badge data={this.props.friendRequest.length}/>}
             <Link to='/friends' className="nav-link active">
                 <i className="fas fa-user-friends icon"></i>
             </Link>
         </li>
         <li className="nav-item col-1 p-1 rounded navitem text-center">
+        {chats.length===0?null:<Badge data={chats.length}/>}
+        
             <Link to='/messages' className="nav-link active">
                 <i className="fab fa-facebook-messenger icon"></i>
             </Link>
         </li>
         <li className="nav-item col-1 p-1 rounded navitem text-center">
-            <div class="dropdown text-center justify-content-center">
+        <span className="badge badge-danger">9</span>
+            <div className="dropdown text-center justify-content-center">
             <p className="nav-link active border-0" data-toggle="dropdown">
                 <i className="fas fa-bell icon"></i>
             </p>
-                <div class="dropdown-menu mr-4">
-                    <a class="dropdown-item" href="#">Link 1</a>
-                    <a class="dropdown-item" href="#">Link 2</a>
-                    <a class="dropdown-item" href="#">Link 3</a>
+                <div className="dropdown-menu mr-4">
+                    <a className="dropdown-item" href="#">Link 1</a>
+                    <a className="dropdown-item" href="#">Link 2</a>
+                    <a className="dropdown-item" href="#">Link 3</a>
                 </div>
                 </div>
         </li>
@@ -114,10 +174,11 @@ this.props.socket.emit("friendRequest",{to:e._id,from:this.state.userid,time:(ne
             </a>
         </li>
     </ul>
-    </nav>:<Login/>}
+    </nav>
             </div>)
     }
     logout = ()=>{
+        this.props.socket.close()
         this.props.logout()
     }
 }
@@ -129,7 +190,11 @@ const mapDispatchToProps = dispatch=>{
         logout:()=>dispatch(logout()),
         searchFriend:(payload)=>dispatch(searchFriend(payload)),
         setSocket:payload=>dispatch(setSocket(payload)),
-        getRequest:payload=>dispatch(getRequest(payload))
+        getRequest:payload=>dispatch(getRequest(payload)),
+        updateRequest:payload=>dispatch(updateRequest(payload)),
+        getFriend:()=>dispatch(getFriend()),
+        sendRequest:()=>dispatch(sendRequest()),
+        setOnlineChat:payload=>dispatch(setOnlineChat(payload))
     }
 }
 

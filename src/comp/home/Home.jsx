@@ -9,7 +9,7 @@ class Home extends Component {
         return (   
 <div>
         {this.props.user===null?null:(
-    <div class="container row col-12 m-auto pt-4">
+    <div className="container row col-12 m-auto pt-4">
         <FirstColumn/>
         <SecondColumn/>
         <ThirdColumn/>

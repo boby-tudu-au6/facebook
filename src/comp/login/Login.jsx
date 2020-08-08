@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
 import {connect} from 'react-redux'
-import { doLogin } from '../../redux/action/action'
+import { doLogin, checkLogin } from '../../redux/action/action'
+import {baseurl} from '../../redux/action/action'
 
 class Login extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class Login extends Component {
         }
     }
     componentDidMount(){
-        // console.log(this.props)
+        this.props.checkLogin()
     }
     handleLogin = async (e) =>{
         e.preventDefault()
@@ -36,7 +37,7 @@ class Login extends Component {
             firstdata = 'email'
             secdata = 'phone'
         }
-        const {data} = await Axios.post("https://s2d4h.sse.codesandbox.io/register",{
+        const {data} = await Axios.post(`${baseurl}/register`,{
             [firstdata]:phoneEmail.value,
             [secdata]:"",
             firstname:firstname.value,
@@ -102,7 +103,7 @@ class Login extends Component {
             <p>Gender</p>
         <div className="form-check-inline">
             <label className="form-check-label">
-            <input type="radio" className="form-check-input" name="gender" value='male' checked/>Male
+            <input type="radio" className="form-check-input" name="gender" value='male' readOnly checked/>Male
             </label>
             </div>
             <div className="form-check-inline">
@@ -129,7 +130,8 @@ class Login extends Component {
 const mapStateToProps = state =>{return {...state}}
 const mapDispatchToProps = dispatch =>{
     return {
-        doLogin:payload=>dispatch(doLogin(payload))
+        doLogin:payload=>dispatch(doLogin(payload)),
+        checkLogin:()=>dispatch(checkLogin())
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Login)

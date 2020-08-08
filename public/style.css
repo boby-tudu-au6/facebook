@@ -31,6 +31,10 @@ body{background-color: lightgray;}
 .hid{overflow: hidden}
 
 .navitem:hover{background-color: #304a80;}
+.badge{
+  position: absolute;
+  left: 40px;
+}
 
 /* .emoji_box{color: white;} */
 
