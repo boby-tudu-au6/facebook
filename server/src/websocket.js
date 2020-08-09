@@ -12,6 +12,9 @@ io.on('connection', socket => {
   console.log(`made socket connection at ${socket.id}`)
   io.sockets.emit("imonline",{socketid:socket.id})
 
+  socket.on("chatRead",async data=>{
+    await Message.updateOne({_id:data._id},{unread:"false"})
+  })
   // this will run when user will connnect
   socket.on("updatesocketid",async data=>{
     await User.findByIdAndUpdate(
@@ -84,7 +87,7 @@ io.on('connection', socket => {
   socket.on('chat', async data => { 
     const chat = await Message.create({...data})
     io.sockets.emit("chat",chat)
-    console.log("chat fired",data)
+    // console.log("chat fired",data)
    })
 });
 

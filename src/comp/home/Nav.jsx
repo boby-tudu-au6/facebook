@@ -11,13 +11,15 @@ import {
     getFriend,
     baseurl,
     sendRequest,
-    setOnlineChat
+    setOnlineChat,
+    delChatId
 } from '../../redux/action/action'
 import io from 'socket.io-client'
 import Login from '../login/Login'
 import {DebounceInput} from 'react-debounce-input';
 import Axios from 'axios'
 import Badge from './Badge'
+import websockets from './websockets'
 
 class Nav extends Component {
     constructor(props) {
@@ -33,9 +35,22 @@ class Nav extends Component {
     }
 
     async componentDidMount(){
+        this.props.history.listen((location)=>{
+            if(location.pathname!=='/messages')this.props.delChatId()
+        })
         this.props.checkLogin()
         const userid = localStorage.getItem("userid")
         this.props.getRequest(userid)
+        // websockets(
+        //     this.state.socket,
+        //     this.props.setSocket,
+        //     this.props.userid,
+        //     this.props.getFriend,
+        //     this.props.getRequest,
+        //     this.props.location.pathname,
+        //     this.props.curChat,
+        //     this.props.setOnlineChat
+        // )
         this.state.socket.on('connect',()=>{
             this.props.setSocket(this.state.socket)
             this.props.socket.emit("updatesocketid",{userid})
@@ -59,14 +74,20 @@ class Nav extends Component {
             setTimeout(()=>this.props.getFriend(),2000)
         })
         this.state.socket.on("userDisconnected",data=>this.props.getFriend())
+        
         this.state.socket.on("chat",data=>{
-            // const loc = this.props.location.pathname
-            // if(loc!=='/messages'){
-            //     // this function is for new message notification
-            //     alert("new message")
-            // }
-            if(this.props.curChat!==null){
+            const loc = this.props.location.pathname
+            if(this.props.curChat!==null && loc==='/messages'){
                 if(data.to===this.props.userid || data.from === this.props.userid){
+                    if(data.to===this.props.userid){
+                        this.state.socket.emit('chatRead',data)
+                        return this.props.setOnlineChat({...data,unread:"false"})
+                    }else if(data.from===this.props.userid){
+                        this.props.setOnlineChat(data)
+                    }
+                }
+            }else if(this.props.curChat===null || loc!=='/messages'){
+                if(data.to===this.props.userid){
                     this.props.setOnlineChat(data)
                 }
             }
@@ -84,8 +105,9 @@ class Nav extends Component {
     render() {
         let chats=0;
         if(this.props.messages.lenght!==0){
-            chats = this.props.messages.filter(chat=>chat.unread==='true')
-            console.log(chats)
+            chats = this.props.messages.filter(
+                chat=>chat.unread==='true' && chat.to===this.props.userid)
+            // console.log(chats)
         }
         return (
             <div>
@@ -194,7 +216,8 @@ const mapDispatchToProps = dispatch=>{
         updateRequest:payload=>dispatch(updateRequest(payload)),
         getFriend:()=>dispatch(getFriend()),
         sendRequest:()=>dispatch(sendRequest()),
-        setOnlineChat:payload=>dispatch(setOnlineChat(payload))
+        setOnlineChat:payload=>dispatch(setOnlineChat(payload)),
+        delChatId:()=>dispatch(delChatId())
     }
 }
 

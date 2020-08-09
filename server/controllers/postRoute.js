@@ -99,9 +99,9 @@ module.exports = {
   },
   getChat:async(req,res)=>{
     const {userid,friendid} = req.body
+    await Message.updateMany({to:userid,unread:"true"},{unread:"false"})
     const chats1 = await Message.find({to:userid,from:friendid})
     const chats2 = await Message.find({to:friendid,from:userid})
-    await Message.updateMany({to:userid,unread:"true"},{unread:"false"})
     const chats = chats1.concat(chats2)
     return res.status(200).json(chats)
   },
