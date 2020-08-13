@@ -7,5 +7,6 @@ router.post('/search',post.search)
 router.post("/getrequest",post.getRequest)
 router.post("/getfriend",post.getFriend)
 router.post("/getchat",post.getChat)
+router.post("/delchat",post.delChat)
    
 module.exports = router; 

@@ -15,6 +15,8 @@ export const SET_CHAT = 'SET_CHAT'
 export const SET_ONLINE_CHAT = 'SET_ONLINE_CHAT'
 export const SET_UNREAD = 'SET_UNREAD'
 export const DEL_CHAT_ID = 'DEL_CHAT_ID'
+export const START_VIDEO = 'START_VIDEO'
+
 
 
 
@@ -63,7 +65,8 @@ export const checkLogin =()=>dispatch=>{
 export const setChat = payload => async dispatch =>{
     const {data} = await Axios.post(`${baseurl}/getchat`,{
         userid:localStorage.getItem('userid'),
-        friendid:payload.friendid
+        friendid:payload.friendid,
+        curChat:payload
     })
     return dispatch({
         type:SET_CHAT,
@@ -141,6 +144,11 @@ export const sendRequest = ()=>dispatch=>{
         type:SEND_REQUEST
     })
 }
-export const delChatId = ()=>dispatch=>{
+export const delChatId = (payload)=>async dispatch=>{
+    await Axios.post(`${baseurl}/delchat`,{userid:payload})
     return dispatch({type:DEL_CHAT_ID})
+}
+
+export const startVideo = () => dispatch=>{
+    return dispatch({type:START_VIDEO})
 }

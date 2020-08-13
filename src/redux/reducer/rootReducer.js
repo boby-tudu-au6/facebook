@@ -1,4 +1,4 @@
-import { DO_LOGIN, CHECK_LOGIN, LOGOUT, SEARCH_FRIEND, SET_SOCKET, GET_REQUEST, UPDATE_REQUEST,baseurl, GET_FRIEND, SEND_REQUEST, SET_CHAT, SET_ONLINE_CHAT, DEL_CHAT_ID } from "../action/action";
+import { DO_LOGIN, CHECK_LOGIN, LOGOUT, SEARCH_FRIEND, SET_SOCKET, GET_REQUEST, UPDATE_REQUEST,baseurl, GET_FRIEND, SEND_REQUEST, SET_CHAT, SET_ONLINE_CHAT, DEL_CHAT_ID, START_VIDEO } from "../action/action";
 
 const initState = {
     user:null,
@@ -13,7 +13,8 @@ const initState = {
     friendId:[],
     curChat:null,
     messages:[],
-    unreadeChat:0
+    unreadeChat:0,
+    video:null
 }
 function rootReducer(state=initState,action){
     const {type,payload} = action
@@ -33,8 +34,9 @@ function rootReducer(state=initState,action){
         case SET_CHAT:return {...state,curChat:payload,messages:action.data}
         case SET_ONLINE_CHAT:return {...state,messages:[...state.messages,payload]}
         case DEL_CHAT_ID:
-            alert("delchat fired")
+            alert("chat id deleted")
             return {...state,curChat:null,messages:[]}
+        case START_VIDEO:return {...state,video:state.curChat}
 
         default : return state
     }

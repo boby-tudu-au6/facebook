@@ -17,7 +17,8 @@ const userSchema = new Schema({
   profilePic:String,
   coverImg:String,
   lastLogin:{ type: Date, default: Date.now },
-  place:String
+  place:String,
+  curChat:{type:Object}
 })
 
 const User = mongoose.model('user',userSchema)

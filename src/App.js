@@ -7,6 +7,7 @@ import Chat from './comp/friend/Chat';
 import Login from './comp/login/Login';
 import { connect } from 'react-redux';
 import {checkLogin} from './redux/action/action'
+import Videoapp from './comp/video/Video'
 
 
 function App(props) {
@@ -18,6 +19,7 @@ function App(props) {
       <Switch>
         <Route exact path='/' component={Home}/>
         <Route exact path='/messages' component={Chat}/>
+        <Route exact path='/profile' component={Videoapp}/>
       </Switch>
     </div>
     </Router>

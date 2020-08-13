@@ -36,22 +36,12 @@ class Nav extends Component {
 
     async componentDidMount(){
         this.props.history.listen((location)=>{
-            if(location.pathname!=='/messages'){
-                if(this.props.curChat!==null){
-                    this.state.socket.emit("leaveroom",{room:this.props.curChat.room})
-                }
-                this.props.delChatId(this.props.userid)
-            }
+            if(location.pathname!=='/messages')this.props.delChatId()
         })
         this.props.checkLogin()
         const userid = localStorage.getItem("userid")
         this.props.getRequest(userid)
         
-        this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(),2000)})
-        this.state.socket.on("userDisconnected",data=>this.props.getFriend())
-        this.state.socket.on("deletedRequest",data=>{this.props.getRequest(userid)})
-        this.state.socket.on("requestCreated",data=>{
-            if(data.to===userid){this.props.getRequest(userid)}})
         this.state.socket.on('connect',()=>{
             websocket.connect(
                 this.state.socket,
@@ -59,14 +49,25 @@ class Nav extends Component {
                 this.props.userid,
                 this.props.getFriend
             )
+            // this.props.setSocket(this.state.socket)
+            // this.props.socket.emit("updatesocketid",{userid})
+            // this.props.getFriend()
         })
+        this.state.socket.on("requestCreated",data=>{if(data.to===userid){this.props.getRequest(userid)}})
+        this.state.socket.on("deletedRequest",data=>{this.props.getRequest(userid)})
         this.state.socket.on("requestAccepted",data=>{
+            // if(data.data.to===userid || data.data.from._id===userid){
+            //     this.props.getRequest(userid)
+            //     this.props.getFriend()
+            // }
             websocket.requestAccepted(
                 data,this.props.userid,
                 this.props.getRequest,
                 this.props.getFriend
             )
         })
+        this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(),2000)})
+        this.state.socket.on("userDisconnected",data=>this.props.getFriend())
         this.state.socket.on("chat",data=>{
             websocket.chat(data,
                 this.state.socket,
@@ -81,6 +82,7 @@ class Nav extends Component {
         if(this.props.messages.lenght!==0){
             chats = this.props.messages.filter(
                 chat=>chat.unread==='true' && chat.to===this.props.userid)
+            // console.log(chats)
         }
         return (
             <div>
@@ -129,7 +131,7 @@ className='btn btn-primary btn-sm'>View profile
 
         
     <ul className="navbar-nav col-6 ml-2">
-        <Link to='/profile' className="nav-item col-3 p-0 d-flex" title='profile' data-toggle="tooltip">
+        <Link to='/profile' className="nav-item col-3 p-0 d-flex">
             <div className="col-4 p-1">
                 <img src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="" className="col-12 rounded-circle p-0"/>
             </div>
@@ -137,20 +139,20 @@ className='btn btn-primary btn-sm'>View profile
         <p className="nav-link text-light" href="/g">{ this.props.username }</p>
             </div>
         </Link>
-        <li className="nav-item col-1 p-1 rounded navitem text-center" title='friend request' data-toggle="tooltip">
+        <li className="nav-item col-1 p-1 rounded navitem text-center">
             {this.props.friendRequest.length===0?null:<Badge data={this.props.friendRequest.length}/>}
             <Link to='/friends' className="nav-link active">
                 <i className="fas fa-user-friends icon"></i>
             </Link>
         </li>
-        <li className="nav-item col-1 p-1 rounded navitem text-center" title='messages' data-toggle="tooltip">
+        <li className="nav-item col-1 p-1 rounded navitem text-center">
         {chats.length===0?null:<Badge data={chats.length}/>}
         
             <Link to='/messages' className="nav-link active">
                 <i className="fab fa-facebook-messenger icon"></i>
             </Link>
         </li>
-        <li className="nav-item col-1 p-1 rounded navitem text-center" title='notification' data-toggle="tooltip">
+        <li className="nav-item col-1 p-1 rounded navitem text-center">
         <span className="badge badge-danger">9</span>
             <div className="dropdown text-center justify-content-center">
             <p className="nav-link active border-0" data-toggle="dropdown">
@@ -163,7 +165,7 @@ className='btn btn-primary btn-sm'>View profile
                 </div>
                 </div>
         </li>
-        <li className="nav-item col-1 p-1 rounded navitem text-center" title='logout' data-toggle="tooltip">
+        <li className="nav-item col-1 p-1 rounded navitem text-center">
             <a className="nav-link active" onClick={this.logout}>
                 <i className="fas fa-power-off icon"></i>
             </a>
@@ -190,7 +192,7 @@ const mapDispatchToProps = dispatch=>{
         getFriend:()=>dispatch(getFriend()),
         sendRequest:()=>dispatch(sendRequest()),
         setOnlineChat:payload=>dispatch(setOnlineChat(payload)),
-        delChatId:(payload)=>dispatch(delChatId(payload))
+        delChatId:()=>dispatch(delChatId())
     }
 }
 

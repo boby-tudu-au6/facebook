@@ -98,16 +98,18 @@ module.exports = {
       return res.status(201).json(user)
   },
   getChat:async(req,res)=>{
-    const {userid,friendid} = req.body
+    const {userid,friendid,curChat} = req.body
+    await User.updateOne({_id:userid},{curChat})
     await Message.updateMany({to:userid,unread:"true"},{unread:"false"})
     const chats1 = await Message.find({to:userid,from:friendid})
     const chats2 = await Message.find({to:friendid,from:userid})
     const chats = chats1.concat(chats2)
     return res.status(200).json(chats)
   },
-  // setUnread:async(req,res)=>{
-  //   const 
-  // }
+  delChat:async(req,res)=>{
+    const {userid} = req.body
+    await User.updateOne({_id:userid},{curChat:{}})
+  }
 };
 
 

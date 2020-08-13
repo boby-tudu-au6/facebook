@@ -7,7 +7,12 @@ const { v4: uuidv4 } = require('uuid');
  
 // websocket functions
 const io = require('socket.io')(server);
+const users = {}
 io.on('connection', socket => {
+  
+  if (!users[socket.id]) {
+    users[socket.id] = socket.id;
+  }
   // this will log when new user will connect
   console.log(`made socket connection at ${socket.id}`)
   io.sockets.emit("imonline",{socketid:socket.id})
@@ -25,6 +30,7 @@ io.on('connection', socket => {
 
 // this will run when user will disconnect
   socket.on("disconnect",async ()=>{
+    delete users[socket.id];
     console.log(`userid ${socket.id} is offline`)
     const testuser = await User.findOne({socketid:socket.id})
     socket.broadcast.emit("userDisconnected",{testuser})
@@ -77,18 +83,48 @@ io.on('connection', socket => {
    });
 
   //  this will run when user join a new room
+  
+  socket.on("leaveroom",({room})=>{
+    // socket.leave(`room-${room}`)
+    io.of('/').in(room).clients((error, socketIds) => {
+      if (error) throw error;
+    
+      socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(`room-${room}`));
+      console.log("leaved room")
+    
+    });
+    io.to(room).emit('useroffline',{userid:socket.id})
+  })
   socket.on('joinroom', data => { 
+    // const rooms = io.nsps['/'].adapter.rooms;
+    console.log(`${socket.id} joined ${data.room}`)
     socket.join(data.room)
-    console.log("user joined room")
-    // socket.emit('chat',{})
+    socket.on("videostarted",()=>{
+      socket.emit("yourID", socket.id);
+      io.sockets.emit("allUsers", {users});
+      
+      socket.on("callUser", (data) => {
+          io.to(data.userToCall).emit('hey', {signal: data.signalData, from: data.from});
+      })
+      
+      socket.on("acceptCall", (data) => {
+          io.to(data.to).emit('callAccepted', data.signal);
+      })
+    })
+    socket.on('chat', async data => { 
+      const chat = await Message.create({...data})
+      io.sockets.emit("chat",chat)
+      // console.log("chat fired",data)
+      })
+    
    });
 
   //  random functin for later use
-  socket.on('chat', async data => { 
-    const chat = await Message.create({...data})
-    io.sockets.emit("chat",chat)
-    // console.log("chat fired",data)
-   })
+  // socket.on('chat', async data => { 
+  //   const chat = await Message.create({...data})
+  //   io.sockets.emit("chat",chat)
+  //   // console.log("chat fired",data)
+  //  })
 });
 
 module.exports = io
