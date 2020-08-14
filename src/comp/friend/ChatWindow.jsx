@@ -3,12 +3,27 @@ import ChatLeft from './ChatLeft'
 import ChatRight from './ChatRight'
 import Videoapp from '../video/Video'
 import withState from '../hoc/withState'
+import {connect} from 'react-redux'
+import { startVideo } from '../../redux/action/action'
 
 class ChatWindow extends Component {
     componentDidUpdate(){
         if(this.props.video!==null){
             this.props.socket.emit('videostarted')
         }
+    }
+    
+    sendMessage = async (e) =>{
+        e.preventDefault()
+        const {chat} = e.target
+        this.props.socket.emit("chat",{
+            from:this.props.userid,
+            to:this.props.curChat.friendid,
+            body:{
+                type:"text",
+                chat:chat.value
+            }
+        })
     }
     render() {
         return (
@@ -41,7 +56,7 @@ class ChatWindow extends Component {
                 })}</>:<Videoapp/>}
             </div>
             {this.props.video===null?
-            <form onSubmit={this.props.sendMessage}
+            <form onSubmit={this.sendMessage}
             className='form form-inline col-12 pl-1 pr-1 pt-2 pb-2 darkgray'>
                 <div className='col-1 p-0 pt-2 pb-2 rounded emoji_box'>
                     <i className="far fa-smile icon"></i>
@@ -52,4 +67,10 @@ class ChatWindow extends Component {
         )
     }
 }
+// const mapStateToProp = state =>{return {...state}}
+// const mapDispatchToProps = dispatch =>{
+//     return {
+//         startVideo:()=>dispatch(startVideo())
+//     }
+// }
 export default withState(ChatWindow)
