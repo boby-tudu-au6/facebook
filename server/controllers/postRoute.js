@@ -4,6 +4,7 @@ const Post = require("../models/postModel");
 const jwt = require("jsonwebtoken");
 const Request = require('../models/requestModel')
 const { compare, hash } = require("bcrypt");
+const { v4: uuidv4 } = require('uuid');
   
 module.exports = {
   // register route
@@ -37,29 +38,19 @@ module.exports = {
      
       let loggedUser = null
       if (email==null){  loggedUser = await User.find({phone})}
-      else{  loggedUser = await User.find({email}
-               
-         
-        )}
-     
-      // console.log(loggedUser[0].password);
+      else{  loggedUser = await User.find({email})}
       const isMatched = await compare(password, loggedUser[0].password);
       
-     
-        
       if (loggedUser !== null) {
         if (!isMatched) return res.json("Incorrect credentials");
 
-        const token = jwt.sign({ user: loggedUser[0] }, "secret", {
+        const test = uuidv4()
+        const newdata = await User.findOneAndUpdate({email:loggedUser[0].email},{token:test})  
+        
+        const userdata = await User.find({_id:newdata._id})
+        const token = jwt.sign({ user: userdata }, "secret", {
           expiresIn: "1h"
-            
-    
         });
-
-        await User.findOneAndUpdate({email:loggedUser[0].email},{token:token}, {
-          new: true
-        })  
-         
         res.status(200).json({ status: "success", data: loggedUser[0], token });
       } else {
         res.status(401).json({ status: "failed", message: "unauthorized" });
@@ -92,6 +83,8 @@ module.exports = {
     const allrequest = await Request.find({to:_id}).populate('from')
     return res.status(200).json(allrequest)
   },
+
+  // get all friends of provided userid
   getFriend:async (req,res)=>{
       const user = await User.findOne({_id:req.body._id})
       .populate('friend.friendId')
@@ -104,11 +97,24 @@ module.exports = {
     const chats1 = await Message.find({to:userid,from:friendid})
     const chats2 = await Message.find({to:friendid,from:userid})
     const chats = chats1.concat(chats2)
+
     return res.status(200).json(chats)
   },
   delChat:async(req,res)=>{
     const {userid} = req.body
     await User.updateOne({_id:userid},{curChat:{}})
+  },
+  checkLogin:async(req,res)=>{
+    const {user} = req.body
+    try{
+      const data = jwt.verify(user,'secret')
+      const data2 = await User.findOne({_id:data.user[0]._id})
+      if(data.user[0].token===data2.token){
+        return res.status(200).json(data.user)
+      }
+    }catch(err){
+      return res.status(401).json({message:"invalid token"})
+    }
   }
 };
 

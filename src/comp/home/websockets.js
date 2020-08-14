@@ -7,7 +7,7 @@ export const websocket = {
     )=>{
         setSocket(socket)
         socket.emit("updatesocketid",{userid})
-        getFriend()
+        getFriend(userid)
     },
     chat:(data,
         socket,
@@ -34,7 +34,7 @@ export const websocket = {
         getFriend)=>{
             if(data.data.to===userid || data.data.from._id===userid){
                 getRequest(userid)
-                getFriend()
+                getFriend(userid)
             }
     }
 }

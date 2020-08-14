@@ -19,7 +19,7 @@ const initState = {
 function rootReducer(state=initState,action){
     const {type,payload} = action
     switch (type) {
-        case DO_LOGIN : return {...state,user:payload.token,username:payload.data.firstname}
+        case DO_LOGIN : return {...state,user:payload.token,username:payload.data.firstname,userid:payload.data._id}
         case CHECK_LOGIN:
             return {...state,loggedIn:true,user:payload.user,username:payload.username,userid:payload.userid}
         case LOGOUT:return {...state,user:null,loggedIn:false,username:null}
@@ -33,9 +33,7 @@ function rootReducer(state=initState,action){
         case SEND_REQUEST:return {...state,searchResult:null}
         case SET_CHAT:return {...state,curChat:payload,messages:action.data}
         case SET_ONLINE_CHAT:return {...state,messages:[...state.messages,payload]}
-        case DEL_CHAT_ID:
-            alert("chat id deleted")
-            return {...state,curChat:null,messages:[]}
+        case DEL_CHAT_ID:return {...state,curChat:null,messages:[]}
         case START_VIDEO:return {...state,video:state.curChat}
 
         default : return state

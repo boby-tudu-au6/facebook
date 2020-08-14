@@ -2,22 +2,21 @@ import React, { Component } from 'react'
 import FirstColumn from './FirstColumn'
 import SecondColumn from './SecondColumn'
 import ThirdColumn from './ThirdColumn'
-import { connect } from 'react-redux'
+import withState from '../hoc/withState'
 
 class Home extends Component {
     render() {
         return (   
-<div>
+    <div>
         {this.props.user===null?null:(
-    <div className="container row col-12 m-auto pt-4">
-        <FirstColumn/>
-        <SecondColumn/>
-        <ThirdColumn/>
+            <div className="container row col-12 m-auto pt-4">
+                <FirstColumn/>
+                <SecondColumn/>
+                <ThirdColumn/>
+            </div>
+        )}
     </div>
-)}
-</div>
         )
     }
 }
-const mapStateToProps = state =>{return {...state}}
-export default connect(mapStateToProps)(Home)
+export default withState(Home)

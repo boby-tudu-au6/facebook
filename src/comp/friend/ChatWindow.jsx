@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import ChatLeft from './ChatLeft'
 import ChatRight from './ChatRight'
-import {connect} from 'react-redux'
 import Videoapp from '../video/Video'
-import { startVideo } from '../../redux/action/action'
+import withState from '../hoc/withState'
 
 class ChatWindow extends Component {
     componentDidUpdate(){
@@ -19,7 +18,7 @@ class ChatWindow extends Component {
                 <div className='col-6 text-left row'>
                 <img src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="img" className="rounded-circle" width='50px' height='50px'/>
                 <div className='col-9 pt-2 text-left'>
-                <h3 className='lightfont'>boby</h3>
+        <h3 className='lightfont'>{this.props.curChat.friendFirstName+' '+this.props.curChat.friendLastName}</h3>
                 </div>
                 </div>
                 <div className='row col-2 text-right p-0' style={{height:'50px'}}>
@@ -53,10 +52,4 @@ class ChatWindow extends Component {
         )
     }
 }
-const mapStateToProps = state =>{return {...state}}
-const mapDispatchToProps = dispatch =>{
-    return {
-        startVideo:()=>dispatch(startVideo())
-    }
-}
-export default connect(mapStateToProps,mapDispatchToProps)(ChatWindow)
+export default withState(ChatWindow)

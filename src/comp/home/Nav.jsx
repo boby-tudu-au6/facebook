@@ -17,9 +17,9 @@ import {
 import io from 'socket.io-client'
 import Login from '../login/Login'
 import {DebounceInput} from 'react-debounce-input';
-import Axios from 'axios'
 import Badge from './Badge'
 import {websocket} from './websockets'
+import withState from '../hoc/withState'
 
 class Nav extends Component {
     constructor(props) {
@@ -31,6 +31,7 @@ class Nav extends Component {
         }
     }
     componentWillUnmount(){
+        this.props.checkLogin()
         this.state.socket.close()
     }
 
@@ -43,16 +44,16 @@ class Nav extends Component {
                 this.props.delChatId(this.props.userid)
             }
         })
-        this.props.checkLogin()
         const userid = localStorage.getItem("userid")
         this.props.getRequest(userid)
         
-        this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(),2000)})
-        this.state.socket.on("userDisconnected",data=>this.props.getFriend())
+        this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(this.props.userid),2000)})
+        this.state.socket.on("userDisconnected",data=>this.props.getFriend(this.props.userid))
         this.state.socket.on("deletedRequest",data=>{this.props.getRequest(userid)})
         this.state.socket.on("requestCreated",data=>{
             if(data.to===userid){this.props.getRequest(userid)}})
         this.state.socket.on('connect',()=>{
+            // alert(this.props.userid)
             websocket.connect(
                 this.state.socket,
                 this.props.setSocket,
@@ -178,20 +179,21 @@ className='btn btn-primary btn-sm'>View profile
     }
 }
 
-const mapStateToProps = state =>{return {...state}}
-const mapDispatchToProps = dispatch=>{
-    return {
-        checkLogin:()=>dispatch(checkLogin()),
-        logout:()=>dispatch(logout()),
-        searchFriend:(payload)=>dispatch(searchFriend(payload)),
-        setSocket:payload=>dispatch(setSocket(payload)),
-        getRequest:payload=>dispatch(getRequest(payload)),
-        updateRequest:payload=>dispatch(updateRequest(payload)),
-        getFriend:()=>dispatch(getFriend()),
-        sendRequest:()=>dispatch(sendRequest()),
-        setOnlineChat:payload=>dispatch(setOnlineChat(payload)),
-        delChatId:(payload)=>dispatch(delChatId(payload))
-    }
-}
+// const mapStateToProps = state =>{return {...state}}
+// const mapDispatchToProps = dispatch=>{
+//     return {
+//         checkLogin:()=>dispatch(checkLogin()),
+//         logout:()=>dispatch(logout()),
+//         searchFriend:(payload)=>dispatch(searchFriend(payload)),
+//         setSocket:payload=>dispatch(setSocket(payload)),
+//         getRequest:payload=>dispatch(getRequest(payload)),
+//         updateRequest:payload=>dispatch(updateRequest(payload)),
+//         getFriend:()=>dispatch(getFriend()),
+//         sendRequest:()=>dispatch(sendRequest()),
+//         setOnlineChat:payload=>dispatch(setOnlineChat(payload)),
+//         delChatId:(payload)=>dispatch(delChatId(payload))
+//     }
+// }
 
-export default connect(mapStateToProps,mapDispatchToProps)(withRouter(Nav))
+// export default connect(mapStateToProps,mapDispatchToProps)(withRouter(Nav))
+export default withState(withRouter(Nav))

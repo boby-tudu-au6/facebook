@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import FriendRequest from './FriendRequest'
 import OnlineFriend from './OnlineFriend'
 import { connect } from 'react-redux'
+import withState from '../hoc/withState'
 
 
 class ThirdColumn extends Component {
@@ -49,5 +50,4 @@ class ThirdColumn extends Component {
         )
     }
 }
-const mapStateToProps = state =>{return {...state}}
-export default connect(mapStateToProps,)(ThirdColumn)
+export default withState(ThirdColumn)

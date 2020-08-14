@@ -20,17 +20,9 @@ export const START_VIDEO = 'START_VIDEO'
 
 
 
-
-
-
-
-
-
 export const baseurl = "http://localhost:8080"
-// export const baseurl = "https://s2d4h.sse.codesandbox.io"
 
 export const doLogin = ({phoneEmail,password}) => async dispatch =>{
-    // console.log("doLogin called")
     let firstdata = 'phone';
         const testdata = phoneEmail.value.search("@")
         if(testdata!==-1){
@@ -41,9 +33,8 @@ export const doLogin = ({phoneEmail,password}) => async dispatch =>{
             password:password.value
         })
         if(data.data!==undefined){
+            console.log(data.token)
             localStorage.setItem("user",data.token)
-            localStorage.setItem("username",data.data.firstname)
-            localStorage.setItem("userid",data.data._id)
             return dispatch({
                 type:DO_LOGIN,
                 payload:data
@@ -51,20 +42,22 @@ export const doLogin = ({phoneEmail,password}) => async dispatch =>{
         }
         alert("login failed")
 }
-
-export const checkLogin =()=>dispatch=>{
-    // console.log("checkLogin called")
-    const user = localStorage.getItem('user')
-    const username = localStorage.getItem("username")
-    const userid = localStorage.getItem("userid")
-    if(user){
-        return dispatch({type:CHECK_LOGIN,payload:{user,username,userid}})
+export const checkLogin =()=>async dispatch=>{
+    try{
+        const user = localStorage.getItem('user')
+        if(user){
+            const {data} = await Axios.post(`${baseurl}/checklogin`,{user})
+            const username = data[0].firstname
+            const userid = data[0]._id
+            return dispatch({type:CHECK_LOGIN,payload:{user,username,userid}})
+        }
+    }catch(err){
+        console.log('invalid token')
     }
 }
-
 export const setChat = payload => async dispatch =>{
     const {data} = await Axios.post(`${baseurl}/getchat`,{
-        userid:localStorage.getItem('userid'),
+        userid:payload.userid,
         friendid:payload.friendid,
         curChat:payload
     })
@@ -74,24 +67,18 @@ export const setChat = payload => async dispatch =>{
         data
     })
 }
-
 export const setOnlineChat = payload =>dispatch =>{
     return dispatch({
         type:SET_ONLINE_CHAT,
         payload
     })
 }
-
 export const logout = ()=>dispatch=>{
-    // console.log("logout called")
     localStorage.removeItem("user")
-    localStorage.removeItem("username")
-    localStorage.removeItem("userid")
     return dispatch({type:LOGOUT})
 }
 
 export const searchFriend = (payload) =>async dispatch=>{
-    // console.log("searchFriend called")
     if(payload!==""){
         const {data} = await Axios.post(`${baseurl}/search`,{q:payload})
         return dispatch({
@@ -105,17 +92,13 @@ export const searchFriend = (payload) =>async dispatch=>{
         })
     }
 }
-
-
 export const setSocket = payload => dispatch =>{
-    // console.log("setSocket called")
     return dispatch({
         type:SET_SOCKET,
         payload
     })
 }
 export const getRequest = payload =>async dispatch =>{
-    // console.log("getRequest called")
     const {data} = await Axios.post(`${baseurl}/getrequest`,{_id:payload})
     return dispatch({
         type:GET_REQUEST,
@@ -123,21 +106,19 @@ export const getRequest = payload =>async dispatch =>{
     })
 }
 export const updateRequest = payload => async dispatch =>{
-    // console.log("update request called")
-    // console.log(payload)
     return dispatch({
         type:UPDATE_REQUEST,
         payload
     })
 }
-export const getFriend = ()=>async dispatch =>{
-    // console.log("getFriend called")
-    const userid = localStorage.getItem("userid")
+export const getFriend = userid =>async dispatch =>{
     const {data} = await Axios.post(`${baseurl}/getfriend`,{_id:userid})
-    return dispatch({
-        type:GET_FRIEND,
-        payload:data
-    })
+    if(data!==null){
+        return dispatch({
+            type:GET_FRIEND,
+            payload:data
+        })
+    }
 }
 export const sendRequest = ()=>dispatch=>{
     return dispatch({

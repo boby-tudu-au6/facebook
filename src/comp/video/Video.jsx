@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import {connect} from 'react-redux';
 import Peer from "simple-peer";
 import styled from "styled-components";
+import withState from '../hoc/withState'
 
 
 const Container = styled.div`
@@ -124,16 +125,7 @@ function Videoapp(props){
   if (stream) {
     UserVideo = (
       <div>
-        <Video className='localVideo col-3' playsInline muted ref={userVideo} autoPlay>
-      </Video>
-        {/* <div className='controls row col-12 text-center justify-content-center m-auto bg-secondary'>
-          <button className='btn btn-danger rounded-circle'>
-            <i class="fas fa-phone-slash"></i>
-          </button>
-          <button className='hangupBtn btn btn-primary rounded-circle'>
-            <i class="fas fa-phone-slash"></i>
-          </button>
-        </div>*/}
+        <Video className='localVideo col-3' playsInline muted ref={userVideo} autoPlay />
       </div> 
     );
   }
@@ -142,8 +134,7 @@ function Videoapp(props){
   if (callAccepted===true) {
     PartnerVideo = (
       <div className='remoteDiv'>
-        <Video className='remoteVideo' playsInline ref={partnerVideo} autoPlay>
-      </Video>
+        <Video className='remoteVideo' playsInline ref={partnerVideo} autoPlay />
         <div className='controls row col-12 justify-content-center m-auto'>
           <button className='btn btn-danger rounded-circle'>
             <i class="fas fa-phone-slash"></i>
@@ -187,5 +178,5 @@ function Videoapp(props){
     </Container>
   );
 }
-const mapStateToProps = state=>{return {...state}}
-export default connect(mapStateToProps)(Videoapp)
+// const mapStateToProps = state=>{return {...state}}
+export default withState(Videoapp)

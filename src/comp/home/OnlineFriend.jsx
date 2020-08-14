@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 class OnlineFriend extends Component {
     constructor(props) {
@@ -35,10 +34,4 @@ class OnlineFriend extends Component {
     }
 }
 
-const mapStateToProps = state =>{return {...state}}
-const mapDispatchToProps = dispatch =>{
-    return {
-
-    }
-}
-export default connect(mapStateToProps)(OnlineFriend)
+export default OnlineFriend
