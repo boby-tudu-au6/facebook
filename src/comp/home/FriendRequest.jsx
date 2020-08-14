@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import withState from '../hoc/withState'
+import {connect} from 'react-redux'
 
 class FriendRequest extends Component {
     constructor(props) {
@@ -40,9 +41,5 @@ class FriendRequest extends Component {
 }
 
 const mapStateToProps = state =>{return {...state}}
-const mapDispatchToProps = dispatch =>{
-    return {
 
-    }
-}
-export default withState(FriendRequest)
+export default connect(mapStateToProps)(FriendRequest)

@@ -26,8 +26,7 @@ class Nav extends Component {
         super(props)
     
         this.state = {
-            userid:localStorage.getItem("userid"),
-            socket:io(baseurl,{userid:localStorage.getItem("userid")})
+            socket:io(baseurl)
         }
     }
     componentWillUnmount(){
@@ -44,14 +43,15 @@ class Nav extends Component {
                 this.props.delChatId(this.props.userid)
             }
         })
-        const userid = localStorage.getItem("userid")
-        this.props.getRequest(userid)
+        this.props.getRequest(this.props.userid)
         
         this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(this.props.userid),2000)})
         this.state.socket.on("userDisconnected",data=>this.props.getFriend(this.props.userid))
-        this.state.socket.on("deletedRequest",data=>{this.props.getRequest(userid)})
+        this.state.socket.on("deletedRequest",data=>{this.props.getRequest(this.props.userid)})
         this.state.socket.on("requestCreated",data=>{
-            if(data.to===userid){this.props.getRequest(userid)}})
+            if(data.to===this.props.userid){
+                this.props.getRequest(this.props.userid)
+            }})
         this.state.socket.on('connect',()=>{
             // alert(this.props.userid)
             websocket.connect(
@@ -115,7 +115,7 @@ class Nav extends Component {
 className='btn btn-success btn-sm' 
 onClick={()=>{
     this.props.sendRequest()
-this.props.socket.emit("friendRequest",{to:e._id,from:this.state.userid,time:(new Date()).toLocaleString})}}
+this.props.socket.emit("friendRequest",{to:e._id,from:this.props.userid,time:(new Date()).toLocaleString})}}
 >Send request</button>:
 <button
 className='btn btn-primary btn-sm'>View profile

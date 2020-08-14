@@ -17,7 +17,7 @@ class ThirdColumn extends Component {
             <p className="text-secondary friend_toggle" data-toggle="collapse" data-target="#friendRequest">Friend Request</p>
         </strong><hr/>
         <div id='friendRequest'>
-        {this.props.friendRequest.map(m=><FriendRequest key={Math.random()} data={m}/>)}
+        {this.props.friendRequest.length===0?null:this.props.friendRequest.map(m=><FriendRequest key={Math.random()} data={m}/>)}
         </div>
     </div>
 
