@@ -67,10 +67,11 @@ class ChatWindow extends Component {
         )
     }
 }
-// const mapStateToProp = state =>{return {...state}}
-// const mapDispatchToProps = dispatch =>{
-//     return {
-//         startVideo:()=>dispatch(startVideo())
-//     }
-// }
-export default withState(ChatWindow)
+const mapStateToProp = state =>{return {...state}}
+const mapDispatchToProps = dispatch =>{
+    return {
+        startVideo:()=>dispatch(startVideo())
+    }
+}
+// export default withState(ChatWindow)
+export default connect(mapStateToProp,mapDispatchToProps)(ChatWindow)

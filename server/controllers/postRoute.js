@@ -15,9 +15,9 @@ const { json } = require("express");
 //   console.log(data.friend[0].friendId)
 //   });
 let arr=['5f2d3856402ae80e8c46c21d','5f2d37d5402ae80e8c46c21c']
-User.findOne({_id:{$in:arr.split(',')}})
-.select('firstname')
-.then(data=>console.log(data))
+// User.findOne({_id:{$in:arr.split(',')}})
+// .select('firstname')
+// .then(data=>console.log(data))
 
 module.exports = {
   // register route

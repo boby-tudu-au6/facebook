@@ -20,7 +20,8 @@ function App(props) {
       <Switch>
         <Route exact path='/' component={Home}/>
         <Route exact path='/messages' component={Chat}/>
-        <Route exact path='/profile' component={Post}/>
+        {/* <Route exact path='/profile' component={Post}/> */}
+        <Route exact path='/profile' component={Videoapp}/>
       </Switch>
     </div>
     </Router>

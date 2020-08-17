@@ -32,12 +32,18 @@ function Videoapp(props){
 
   useEffect(() => {
     socket.current = props.socket
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-      setStream(stream);
-      if (userVideo.current) {
-        userVideo.current.srcObject = stream;
-      }
-    })
+    try{
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+        console.log('video recieved')
+        setStream(stream);
+        if (userVideo.current) {
+          userVideo.current.srcObject = stream;
+        }
+      })
+    }catch(err){
+      console.log("video not found")
+      console.log(err.message)
+    }
 
     if(socket.current!==null){
       
@@ -137,10 +143,7 @@ function Videoapp(props){
         <Video className='remoteVideo' playsInline ref={partnerVideo} autoPlay />
         <div className='controls row col-12 justify-content-center m-auto'>
           <button className='btn btn-danger rounded-circle'>
-            <i class="fas fa-phone-slash"></i>
-          </button>
-          <button className='hangupBtn btn btn-primary rounded-circle'>
-            <i class="fas fa-phone-slash"></i>
+            <i className="fas fa-phone-slash"></i>
           </button>
         </div>
       </div>
@@ -178,5 +181,6 @@ function Videoapp(props){
     </Container>
   );
 }
-// const mapStateToProps = state=>{return {...state}}
-export default withState(Videoapp)
+const mapStateToProps = state=>{return {...state}}
+// export default withState(Videoapp)
+export default connect(mapStateToProps)(Videoapp)

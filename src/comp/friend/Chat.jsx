@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import  ChatWindow  from './ChatWindow'
 import withState from '../hoc/withState'
+import {connect} from 'react-redux'
+import {getFriend,setChat} from '../../redux/action/action'
 
 class Chat extends Component {
     constructor(props) {
@@ -76,11 +78,12 @@ class Chat extends Component {
     }
 }
 
-export default withState(Chat)
-// const mapStateToProps = state =>{return {...state}}
-// const mapDispatchToProps = dispatch =>{
-//     return {
-//         getFriend:()=>dispatch(getFriend()),
-//         setChat:payload=>dispatch(setChat(payload))
-//     }
-// }
+// export default withState(Chat)
+const mapStateToProps = state =>{return {...state}}
+const mapDispatchToProps = dispatch =>{
+    return {
+        getFriend:()=>dispatch(getFriend()),
+        setChat:payload=>dispatch(setChat(payload))
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Chat)
