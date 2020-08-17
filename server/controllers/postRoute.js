@@ -1,11 +1,24 @@
 const User = require("../models/userModel");
 const Message = require("../models/messageModel");
 const Post = require("../models/postModel");
-const jwt = require("jsonwebtoken");
 const Request = require('../models/requestModel')
+const jwt = require("jsonwebtoken");
 const { compare, hash } = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
-  
+const cloudinary = require("./fileUpload/cloudinary/cloudinary")
+const bufferToString = require('./fileUpload/bufferToString/bufferToString');
+const { json } = require("express");
+
+// User.findOne({_id:"5f2d37d5402ae80e8c46c21c"})
+// .populate("friend.friendId",'post')
+// .then(data=>{
+//   console.log(data.friend[0].friendId)
+//   });
+let arr=['5f2d3856402ae80e8c46c21d','5f2d37d5402ae80e8c46c21c']
+User.findOne({_id:{$in:arr.split(',')}})
+.select('firstname')
+.then(data=>console.log(data))
+
 module.exports = {
   // register route
   register: async (req, res) => {
@@ -115,8 +128,47 @@ module.exports = {
     }catch(err){
       return res.status(401).json({message:"invalid token"})
     }
+  },
+  // post:async (req,res)=>{
+  //   const { originalname,buffer,mimetype } = req.files
+  //   const { message, userid } = req.body
+  //   try{
+  //     const data=[]
+  //     req.files.forEach(async element => {
+  //       const { originalname,buffer,mimetype } = element
+  //       const imageContent = bufferToString( originalname,buffer)
+  //       const { secure_url } = await cloudinary.uploader.upload(imageContent)
+  //       console.log("upload done")
+  //       data.push({type:mimetype,data:secure_url})
+  //       if(req.files.length===data.length){
+  //         data.push({type:'text',data:message})
+  //         const newPost = await Post.create({
+  //           from:userid,
+  //           data
+  //         })
+  //         console.log(req.body.message)
+  //         return res.status(200).json(data)
+  //       }
+  //     });
+  //   }catch(err){
+  //     res.status(400).json({message:"something wrong happened"})
+  //   }
+  // }
+  getpost:async (req,res)=>{
+    const {userid} = req.body
+    const allpost = await User.findOne({_id:"5f2d37d5402ae80e8c46c21c"})
+                    .populate("friend.friendId",'post')
+    res.status(200).json({post:allpost.friend[0].friendId})
+//     User.findOne({_id:"5f2d37d5402ae80e8c46c21c"})
+// .populate("friend.friendId",'post')
+// .then(data=>{
+//   console.log(data.friend[0].friendId)
+//   });
   }
 };
+
+
+
 
 
   

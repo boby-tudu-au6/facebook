@@ -35,6 +35,7 @@ class Nav extends Component {
     }
 
     async componentDidMount(){
+        this.props.getPost(this.props.userid)
         this.props.history.listen((location)=>{
             if(location.pathname!=='/messages'){
                 if(this.props.curChat!==null){
@@ -48,6 +49,7 @@ class Nav extends Component {
         this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(this.props.userid),2000)})
         this.state.socket.on("userDisconnected",data=>this.props.getFriend(this.props.userid))
         this.state.socket.on("deletedRequest",data=>{this.props.getRequest(this.props.userid)})
+        this.state.socket.on("newpost",()=>console.log("new post arrived"))
         this.state.socket.on("requestCreated",data=>{
             if(data.to===this.props.userid){
                 this.props.getRequest(this.props.userid)
@@ -76,6 +78,7 @@ class Nav extends Component {
                 this.props.userid,
                 this.props.setOnlineChat)
         })
+        this.state.socket.on("newpostdone",data=>console.log(data))
     }
     render() {
         let chats=0;

@@ -1,8 +1,12 @@
 const User = require('../models/userModel')
 const Request = require("../models/requestModel")
 const Message = require('../models/messageModel')
+const Post = require("../models/postModel")
 const server = require('./index')
 const { v4: uuidv4 } = require('uuid');
+const bufferToString = require('../controllers/fileUpload/bufferToString/bufferToString')
+const cloudinary = require("../controllers/fileUpload/cloudinary/cloudinary")
+const { post } = require('../controllers/postRoute')
 
  
 // websocket functions
@@ -118,6 +122,56 @@ io.on('connection', socket => {
       })
     
    });
+
+   socket.on("newpost",({data,userid,message})=>{
+     const arr = []
+     data.forEach(async item=>{
+      const imageContent = bufferToString( item.name,item.data)
+        const { secure_url } = await cloudinary.uploader.upload(imageContent)
+        arr.push({type:item.type,data:secure_url,userid})
+        if(data.length===arr.length){
+          const newpost = await Post.create({
+            from:userid,
+            data:arr,
+            message
+          })
+          await User.updateOne({_id:userid},
+            {$push:{
+              post:{_id:newpost._id}
+            }}
+          )
+          io.sockets.emit("newpostdone",newpost)
+        }
+     })
+
+    //  data.push({type:mimetype,data:secure_url})
+    //  if(req.files.length===data.length){
+    //    data.push({type:'text',data:message})
+    //    const newPost = await Post.create({
+    //      from:userid,
+    //      data
+    //    })
+
+
+
+    // {
+    //   data: [
+    //     {
+    //       id: '0.6529080226177817',
+    //       name: '155977.jpg',
+    //       type: 'image/jpeg',
+    //       data: <Buffer ff d8 ff e0 00 10 4a 46 49 46 00 01 01 00 00 01 00 01 00 00 ff db 00 43 00 06 04 05 06 05 04 06 06 05 06 07 07 06 08 0a 10 0a 0a 09 09 0a 14 0e 0f 0c ... 894018 more bytes>
+    //     },
+    //     {
+    //       id: '0.3790362025429215',
+    //       name: '157687.jpg',
+    //       type: 'image/jpeg',
+    //       data: <Buffer ff d8 ff e0 00 10 4a 46 49 46 00 01 01 00 00 01 00 01 00 00 ff fe 00 3c 43 52 45 41 54 4f 52 3a 20 67 64 2d 6a 70 65 67 20 76 31 2e 30 20 28 75 73 69 ... 185524 more bytes>
+    //     }
+    //   ]
+    // }
+    
+   })
 
   //  random functin for later use
   // socket.on('chat', async data => { 

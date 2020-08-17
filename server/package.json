@@ -7,15 +7,22 @@
     "start": "nodemon src/index.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bcrypt": "5.0.0",
     "bcryptjs": "2.4.3",
+    "cloudinary": "^1.22.0",
+    "connect-busboy": "0.0.2",
+    "connect-multiparty": "^2.2.0",
     "cors": "2.8.5",
+    "datauri": "^3.0.0",
     "dotenv": "8.2.0",
     "express": "4.17.1",
+    "express-fileupload": "^1.1.10",
     "jsonwebtoken": "8.5.1",
     "jwt-decode": "2.2.0",
     "mongoose": "5.9.27",
     "morgan": "1.10.0",
+    "multer": "^1.4.2",
     "socket.io": "2.3.0",
     "uuid": "8.3.0"
   },

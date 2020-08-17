@@ -6,6 +6,7 @@ const server = app.listen(port, () => {
 module.exports = server
 
 require("./websocket")
+require('../controllers/postRoute')
 
 //the server object listens on port 8080
 // base url https://xbzfz.sse.codesandbox.io/

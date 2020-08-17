@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo } from '../../redux/action/action'
+import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost } from '../../redux/action/action'
 
 function withState(Component) {
     const mapStateToProps = state =>{return {...state}}
@@ -17,7 +17,8 @@ function withState(Component) {
             updateRequest:payload=>dispatch(updateRequest(payload)),
             setOnlineChat:payload=>dispatch(setOnlineChat(payload)),
             delChatId:payload=>dispatch(delChatId(payload)),
-            startVideo:()=>dispatch(startVideo)
+            startVideo:()=>dispatch(startVideo),
+            getPost:payload=>dispatch(getPost(payload))
         }
     }
     return connect(mapStateToProps,mapDispatchToProps)(
@@ -53,6 +54,7 @@ function withState(Component) {
                     friendId={this.props.friendId}
                     unreadeChat={this.props.unreadeChat}
                     video={this.props.video}
+                    getPost={this.props.getPost}
                 />)
             }
         }

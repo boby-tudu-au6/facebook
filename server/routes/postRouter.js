@@ -9,5 +9,6 @@ router.post("/getfriend",post.getFriend)
 router.post("/getchat",post.getChat)
 router.post("/delchat",post.delChat)
 router.post("/checklogin",post.checkLogin)
+router.post("/getpost",post.getpost)
    
 module.exports = router; 

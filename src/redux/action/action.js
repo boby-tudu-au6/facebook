@@ -5,17 +5,18 @@ export const CHECK_LOGIN = 'CHECK_LOGIN'
 export const LOGOUT = 'LOGOUT'
 export const SEARCH_FRIEND = 'SEARCH_FRIEND'
 export const SEND_REQUEST = 'SEND_REQUEST'
-export const GET_REQUEST = 'GET_REQUEST'
-export const SET_SOCKET = 'SET_SOCKET'
-export const GET_NOTIFICATION = 'GET_NOTIFICATION'
 export const UPDATE_REQUEST = 'UPDATE_REQUEST'
+export const DEL_CHAT_ID = 'DEL_CHAT_ID'
+export const START_VIDEO = 'START_VIDEO'
+export const GET_REQUEST = 'GET_REQUEST'
+export const GET_NOTIFICATION = 'GET_NOTIFICATION'
 export const GET_FRIEND = 'GET_FRIEND'
+export const GET_POST = 'GET_POST'
+export const SET_SOCKET = 'SET_SOCKET'
 export const SET_PROFILE = 'SET_PROFILE'
 export const SET_CHAT = 'SET_CHAT'
 export const SET_ONLINE_CHAT = 'SET_ONLINE_CHAT'
 export const SET_UNREAD = 'SET_UNREAD'
-export const DEL_CHAT_ID = 'DEL_CHAT_ID'
-export const START_VIDEO = 'START_VIDEO'
 
 
 
@@ -33,7 +34,6 @@ export const doLogin = ({phoneEmail,password}) => async dispatch =>{
             password:password.value
         })
         if(data.data!==undefined){
-            console.log(data.token)
             localStorage.setItem("user",data.token)
             return dispatch({
                 type:DO_LOGIN,
@@ -132,4 +132,12 @@ export const delChatId = (payload)=>async dispatch=>{
 
 export const startVideo = () => dispatch=>{
     return dispatch({type:START_VIDEO})
+}
+export const getPost = payload => async dispatch =>{
+    const {data} = await Axios.post(`${baseurl}/getpost`,{userid:payload})
+    console.log(data)
+    // return dispatch({
+    //     type:GET_POST,
+    //     payload:data
+    // })
 }

@@ -2,10 +2,11 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const postSchema = new Schema({
-  from:{type:String,required:true},
+  from:{ type: Schema.Types.ObjectId, ref: "user" },
   time:{type:Date, default:Date.now},
-  type:String,
-  place:String
+  data:[{type:Object}],
+  like:{type:Number,default:0},
+  comment:[{type:Object}]
 })
 
 const Post = mongoose.model('post',postSchema)

@@ -18,7 +18,8 @@ const userSchema = new Schema({
   coverImg:String,
   lastLogin:{ type: Date, default: Date.now },
   place:String,
-  curChat:{type:Object}
+  curChat:{type:Object},
+  post:[{ type: Schema.Types.ObjectId, ref: "post" }]
 })
 
 const User = mongoose.model('user',userSchema)
