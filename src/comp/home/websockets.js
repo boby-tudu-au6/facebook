@@ -14,17 +14,28 @@ export const websocket = {
         location,
         curChat,
         userid,
-        setOnlineChat
+        setOnlineChat,
+        messages
         )=>{
-            if(curChat!==null && location==='/messages'){
-                if(data.to===userid){
-                    socket.emit('chatRead',data)
-                    return setOnlineChat({...data,unread:"false"})
-                }else if(data.from===userid){
-                    setOnlineChat(data)
+            let chats = []
+            let timeChat=[]
+            messages.forEach(item=>{
+                timeChat.push(item.time.slice(0,-4))
+                chats.push(item.body.chat)
+            })
+            if(chats.includes(data.body.chat) && timeChat.includes(data.time.slice(0,-4))){
+                return
+            }else{
+                if(curChat!==null && location==='/messages'){
+                    if(data.to===userid){
+                        socket.emit('chatRead',data)
+                        return setOnlineChat({...data,unread:"false"})
+                    }else if(data.from===userid){
+                        setOnlineChat(data)
+                    }
+                }else if(curChat===null || location!=="/messages"){
+                    if(data.to===userid){setOnlineChat(data)}
                 }
-            }else if(curChat===null || location!=="/messages"){
-                if(data.to===userid){setOnlineChat(data)}
             }
     },
     requestAccepted:(

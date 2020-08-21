@@ -1,15 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost } from '../../redux/action/action'
+import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost, incUnseenPost, delUnseenPost, setFile, setFileSrc, delFiles, delFileItem,setPageId, disSetChat } from '../../redux/action/action'
 
 function withState(Component) {
     const mapStateToProps = state =>{return {...state}}
     const mapDispatchToProps = dispatch =>{
         return {
-            checkLogin:()=>dispatch(checkLogin()),
             getFriend:payload=>dispatch(getFriend(payload)),
-            sendRequest:()=>dispatch(sendRequest()),
-            logout:()=>dispatch(logout()),
             setChat:payload=>dispatch(setChat(payload)),
             searchFriend:payload=>dispatch(searchFriend(payload)),
             setSocket:payload=>dispatch(setSocket(payload)),
@@ -17,15 +14,24 @@ function withState(Component) {
             updateRequest:payload=>dispatch(updateRequest(payload)),
             setOnlineChat:payload=>dispatch(setOnlineChat(payload)),
             delChatId:payload=>dispatch(delChatId(payload)),
+            getPost:payload=>dispatch(getPost(payload)),
+            setFile:payload=>dispatch(setFile(payload)),
+            setFileSrc:payload=>dispatch(setFileSrc(payload)),
+            delFileItem:payload=>dispatch(delFileItem(payload)),
+            setPageId:payload=>dispatch(setPageId(payload)),
+            checkLogin:()=>dispatch(checkLogin()),
+            sendRequest:()=>dispatch(sendRequest()),
+            logout:()=>dispatch(logout()),
             startVideo:()=>dispatch(startVideo),
-            getPost:payload=>dispatch(getPost(payload))
+            incUnseenPost:()=>dispatch(incUnseenPost()),
+            delUnseenPost:()=>dispatch(delUnseenPost()),
+            delFiles:()=>dispatch(delFiles()),
+            disSetChat:()=>dispatch(disSetChat())
+        
         }
     }
     return connect(mapStateToProps,mapDispatchToProps)(
         class extends React.Component{
-            componentDidMount(){
-                // this.props.checkLogin()
-            }
             render(){
                 return (
                 <Component
@@ -55,6 +61,19 @@ function withState(Component) {
                     unreadeChat={this.props.unreadeChat}
                     video={this.props.video}
                     getPost={this.props.getPost}
+                    post={this.props.post}
+                    unseenpost={this.props.unseenpost}
+                    incUnseenPost={this.props.incUnseenPost}
+                    delUnseenPost={this.props.delUnseenPost}
+                    setFile={this.props.setFile}
+                    setFileSrc={this.props.setFileSrc}
+                    delFiles={this.props.delFiles}
+                    delFileItem={this.props.delFileItem}
+                    file={this.props.file}
+                    filesrc={this.props.filesrc}
+                    setPageId={this.props.setPageId}
+                    pageid={this.props.pageid}
+                    disSetChat={this.props.disSetChat}
                 />)
             }
         }

@@ -88,21 +88,30 @@ io.on('connection', socket => {
 
   //  this will run when user join a new room
   
-  socket.on("leaveroom",({room})=>{
-    // socket.leave(`room-${room}`)
-    io.of('/').in(room).clients((error, socketIds) => {
-      if (error) throw error;
+  // socket.on("leaveroom",({room})=>{
+  //   io.of('/').in(room).clients((error, socketIds) => {
+  //     if (error) throw error;
     
-      socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(`room-${room}`));
-      console.log("leaved room")
+  //     socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(`room-${room}`));
+  //     console.log(`${socket.id} leaved ${room}`)
     
-    });
-    io.to(room).emit('useroffline',{userid:socket.id})
-  })
+  //   });
+  //   io.to(room).emit('useroffline',{userid:socket.id})
+  // })
   socket.on('joinroom', data => { 
     // const rooms = io.nsps['/'].adapter.rooms;
     console.log(`${socket.id} joined ${data.room}`)
     socket.join(data.room)
+    socket.on("leaveroom",({room})=>{
+      io.of('/').in(room).clients((error, socketIds) => {
+        if (error) throw error;
+      
+        socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(`room-${room}`));
+        console.log(`${socket.id} leaved ${room}`)
+      
+      });
+      io.to(room).emit('useroffline',{userid:socket.id})
+    })
     socket.on("videostarted",()=>{
       socket.emit("yourID", socket.id);
       io.sockets.emit("allUsers", {users});
@@ -115,10 +124,33 @@ io.on('connection', socket => {
           io.to(data.to).emit('callAccepted', data.signal);
       })
     })
+    socket.on("audiostarted",()=>{
+      socket.emit("audio_yourID", socket.id);
+      io.sockets.emit("audio_allUsers", {users});
+      
+      socket.on("audio_callUser", (data) => {
+          io.to(data.userToCall).emit('audio_hey', {signal: data.signalData, from: data.from});
+      })
+      
+      socket.on("audio_acceptCall", (data) => {
+          io.to(data.to).emit('audio_callAccepted', data.signal);
+      })
+    })
     socket.on('chat', async data => { 
-      const chat = await Message.create({...data})
-      io.sockets.emit("chat",chat)
-      // console.log("chat fired",data)
+      let date = new Date()
+      const mes = await Message.find({from:data.from,to:data.to})
+      const chats = []
+      const timechat = []
+      mes.forEach(item=>{
+        chats.push(item.body.chat)
+        timechat.push((item.time).toString().slice(0,-3))
+      })
+      if(chats.includes(data.body.chat) && timechat.includes((date.toISOString).toString().slice(0,-3))){
+        return 
+      }else{
+        const chat = await Message.create({...data})
+        io.sockets.emit("chat",chat)
+      }
       })
     
    });
@@ -132,45 +164,39 @@ io.on('connection', socket => {
         if(data.length===arr.length){
           const newpost = await Post.create({
             from:userid,
-            data:arr,
-            message
+            data:{arr, message}
           })
           await User.updateOne({_id:userid},
             {$push:{
               post:{_id:newpost._id}
             }}
           )
+          console.log(newpost)
           io.sockets.emit("newpostdone",newpost)
         }
      })
-
-    //  data.push({type:mimetype,data:secure_url})
-    //  if(req.files.length===data.length){
-    //    data.push({type:'text',data:message})
-    //    const newPost = await Post.create({
-    //      from:userid,
-    //      data
-    //    })
-
-
-
-    // {
-    //   data: [
-    //     {
-    //       id: '0.6529080226177817',
-    //       name: '155977.jpg',
-    //       type: 'image/jpeg',
-    //       data: <Buffer ff d8 ff e0 00 10 4a 46 49 46 00 01 01 00 00 01 00 01 00 00 ff db 00 43 00 06 04 05 06 05 04 06 06 05 06 07 07 06 08 0a 10 0a 0a 09 09 0a 14 0e 0f 0c ... 894018 more bytes>
-    //     },
-    //     {
-    //       id: '0.3790362025429215',
-    //       name: '157687.jpg',
-    //       type: 'image/jpeg',
-    //       data: <Buffer ff d8 ff e0 00 10 4a 46 49 46 00 01 01 00 00 01 00 01 00 00 ff fe 00 3c 43 52 45 41 54 4f 52 3a 20 67 64 2d 6a 70 65 67 20 76 31 2e 30 20 28 75 73 69 ... 185524 more bytes>
-    //     }
-    //   ]
-    // }
     
+   })
+
+   socket.on("likepost",async ({_id,userid})=>{
+     const allpost = await Post.findOne({_id})
+     console.log(`${userid}`,allpost.like)
+     if(allpost.like.includes(userid)==true){
+       let post = allpost.like
+       post = post.filter(item=>item!==userid)
+       await Post.updateOne({_id},{like:post})
+     }else{
+      await Post.updateOne({_id},{$push:{like:userid}})
+     }
+    socket.emit("postupdated")
+   })
+
+   socket.on("postcomment",async ({userid,comment,_id})=>{
+     const user = await User.findOne({_id:userid})
+     await Post.updateOne({_id},{
+      $push:{comment:{userid,comment,username:user.firstname}}
+    })
+    socket.emit("postupdated")
    })
 
   //  random functin for later use

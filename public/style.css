@@ -8,7 +8,7 @@
 
 body{background-color: lightgray;}
 
-.navbar{background-color: #4267B2;}
+.navbar{background-color: #4267B2;min-width: 600px;}
 
 .logo{font-size: 35px;}
 
@@ -49,8 +49,12 @@ body{background-color: lightgray;}
   overflow: hidden;
 }
 .full{
-  height: 88vh;
+  height: 85vh;
   overflow-y: scroll
+}
+.secCol{
+  height: 74vh;
+  overflow-y: scroll;
 }
 p{
 padding: 0;
@@ -87,18 +91,41 @@ border-radius: 100px
 .remoteDiv{
   position: absolute;
   left: 0px;
+  width:600px;
+  min-height:350px;
 }
 .remoteVideo{
   /* position: absolute;
   left:0px; */
-  width:50vw
+  width: 100%;
 }
 .controls{
   z-index: 300;
-  width:40vw;
+  width:600px;
+  text-align: center;
+  justify-content: center;
   position: absolute;
   left:0px;
-  top:50%;
+  top:300px;
 }
 
 
+
+.box {
+  align-self: flex-end;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  margin: 0 auto 0 auto;
+  transform-origin: bottom;
+}
+.bounce-1 {
+  animation-name: bounce-1;
+  animation-timing-function: linear;
+}
+@keyframes bounce-1 {
+  0%   { transform: translateY(0); }
+  25%  { transform: translateY(-100px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-100px); }
+  100% { transform: translateY(0); }
+}

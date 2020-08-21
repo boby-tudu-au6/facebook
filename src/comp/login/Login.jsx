@@ -103,7 +103,7 @@ class Login extends Component {
             <p>Gender</p>
         <div className="form-check-inline">
             <label className="form-check-label">
-            <input type="radio" className="form-check-input" name="gender" value='male' readOnly checked/>Male
+            <input type="radio" className="form-check-input" name="gender" value='male'/>Male
             </label>
             </div>
             <div className="form-check-inline">

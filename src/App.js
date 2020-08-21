@@ -8,19 +8,17 @@ import Login from './comp/login/Login';
 import { connect } from 'react-redux';
 import {checkLogin} from './redux/action/action'
 import Videoapp from './comp/video/Video'
-import Post from './comp/post/Post'
 
 
 function App(props) {
   checkLogin()
   return (
     <Router>
-    <div>
+    <div className='true' style={{minWidth:"600px"}}>
       {props.username!==null?<Nav/>:<Login/>}
       <Switch>
         <Route exact path='/' component={Home}/>
         <Route exact path='/messages' component={Chat}/>
-        {/* <Route exact path='/profile' component={Post}/> */}
         <Route exact path='/profile' component={Videoapp}/>
       </Switch>
     </div>

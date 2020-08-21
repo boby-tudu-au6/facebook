@@ -42,7 +42,6 @@ export class Post extends Component {
     handleSubmit = async (e) => { 
         e.preventDefault();
         console.log(this.state.files)
-        console.log(typeof this.state.files)
         // const formData = new FormData(); 
         // formData.append( 
         //     "uploadImage", 
