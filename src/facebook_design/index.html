@@ -9,149 +9,159 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!--Import materialize.css-->
-  <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <div class="main" id="main">
-     <div class="row " id="stylecard">
-       <div class="col-6" id="titlecard">
-         <p>status </p>
-         <hr>
-         <p>region</p>
-         <hr>
-         <p>from</p>
-         <hr>
-         <p>duration</p>
-       </div>
-       <div class="col-6" id="description">
-         <p>processing</p>
-         <hr>
-         <p>Delhi</p>
-         <hr>
-         <p>27/12/2020</p>
-         <hr>
-         <p>2h30m</p>
+    <nav class="navbar navbar-dark navbar-expand-sm pt-0 pb-0">
+        <a class="navbar-brand logo"><i class="fa fa-facebook-official"></i></a>
+        <form class='form form-inline rounded col-5 p-0'>
+            <input type="text" class="form-control border-0 col-11 pt-0 rounded-0" placeholder="search">
+            <button type="submit" class="btn btn-light text-secondary border-0 form-control col-1 m-0 rounded-0">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
 
-       </div>
+        <!-- nav links -->
+    <ul class="navbar-nav col-6 ml-2">
+        <div class="nav-item col-3 p-0 d-flex">
+            <div class="col-4 p-0 pt-1">
+                <img src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="" class="col-12 rounded-circle p-0">
+            </div>
+            <div class="col-10 p-0">
+                <a class="nav-link text-light">Boby</a>
+            </div>
+        </div>
+        <li class="nav-item col-1 pt-1">
+            <a class="nav-link active" href="#">
+                <i class="fa fa-users"></i>
+            </a>
 
-     </div>
-     <div class="row " id="stylecard">
-      <div class="col-6" id="titlecard">
-        <p>status </p>
-        <hr>
-        <p>region</p>
-        <hr>
-        <p>from</p>
-        <hr>
-        <p>duration</p>
-      </div>
-      <div class="col-6" id="description">
-        <p>processing</p>
-        <hr>
-        <p>Delhi</p>
-        <hr>
-        <p>27/12/2020</p>
-        <hr>
-        <p>2h30m</p>
+        </li>
+        <li class="nav-item col-1 pt-1">
+            <a class="nav-link active" href="#">
+                <i class="fa fa-commenting"></i>
+            </a>
+        </li>
+        <li class="nav-item col-1 pt-1">
+            <a class="nav-link active" href="#">
+                <i class="fa fa-bell"></i>
+            </a>
+        </li>
+    </ul>
+    </nav>
 
-      </div>
+    <div class="container row col-12 m-auto pt-3">
+        <!-- first column -->
+        <div class="col-3 full">
+          <div class="col-12 bg-light mb-2 rounded hid" style="height: 20vh"></div>
+          <div class="col-12 bg-light mb-2 rounded hid" style="height: 20vh"></div>
+          <div class="col-12 bg-light mb-2 rounded hid" style="height: 20vh"></div>
+          <div class="col-12 bg-light mb-2 rounded hid" style="height: 20vh"></div>
+        </div>
 
+        <!-- second column -->
+        <div class="col-6 full">
+
+            <!-- create post section -->
+            <div class="col-12 m-auto bg-light rounded p-0 hid">
+                <div class="container-fluid border-bottom lightgray pt-1 rounded-top">
+                    <h6>Create post</h6>
+                </div>
+                <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto border-bottom">
+                    <img src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="" class="col-1 rounded-circle p-0 ml-3">
+                    <div class="col-10">
+                        <form class='form col-12'>
+                            <textarea name="newpost" cols="30" rows="10" class="form-control col-12 border-0 rounded-0 bg-light" placeholder="Write something here"></textarea>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 row container p-1 m-auto text-center justify-content-center">
+                    <div class="col-4 lightgray text-dard round m-1">
+                        <i class="fa fa-file-image-o"></i>
+                        <p class="small d-inline">Image/Video</p>
+                    </div>
+                    <div class="col-4 lightgray text-dard round m-1">
+                        <i class="fa fa-user-plus"></i>
+                        <p class="small d-inline">Tag friends</p>
+                    </div>
+                </div>
+            </div>
+          
+              <!--          regular post section-->
+          <div class="bg-light hid rounded mt-2">
+            <div class="container-fluid border-bottom lightgray pt-1 rounded-top pb-1 pl-2 row m-auto">
+                  <img class="col-1 rounded-circle p-0 ml-3" src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt='img'/>
+                  <div class="col-10">
+                    <p class="small">Boby</p> 
+                    <p class="extra_small">Posted on 6 Dec 2018</p>
+                  </div>
+              </div>
+            <div class="col-12 border-bottom p-0">
+              <img class="col-12 m-0 p-0" src="https://images.pexels.com/photos/1141792/pexels-photo-1141792.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"/>
+            </div>
+            <div class="col-12 border-bottom row m-auto p-2 text-center">
+              <div class="col-6"><p class='small'>200 Likes</p></div>
+              <div class="col-6"><p class='small'>200 Comments</p></div>
+            </div>
+              <!--            like comment section-->
+            <div class="col-12 p-0 border-bottom row m-auto">
+              <div class="col-6 p-1 text-center">
+                <i class="fa fa-thumbs-o-up"></i>
+                Like
+              </div>
+              <div class="col-6 p-1 text-center">
+                <i class="fa fa-comment-o"></i>
+                comment
+              </div>
+            </div>
+            <div class="col-12 p-0 pb-3">
+              <p class="pl-4 mb-2">View Comment</p>
+              <div class="col-12 row m-auto pb-2">
+                <img class="col-1 rounded-circle p-0 ml-3" src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt='img'/>
+                <form class="ml-2 form form-inline lightgray col-10 round hid">
+                  <input class="form-control border-0 col-11 transparent" name='comment' placeholder="Write a comment" />
+                  <button class="btn rounded-0 transparen text-primary col-1"><i class="fa fa-paper-plane"></i></button>
+                </form>
+              </div>
+            </div>
+            
+          </div>
+          
+          
+        </div>
+        <!-- third column -->
+        <div class="col-3 full">
+          <div class="container col-12 m-auto bg-light mb-2">
+            <strong><p class="text-secondary">Friend Request</p></strong><hr/>
+            <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
+              <img src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="" class="col-3 bg-secondary rounded-circle p-0">
+              <div class="col-9">
+                <p class="text-secondary">Boby Tudu</p>
+                <p class="text-secondary" style="font-size: 10px;">From Sahibganj</p>
+              </div>
+              <div class="row col-12 p-1 m-auto justify-content-between">
+                <div class="col-5 bg-primary rounded text-light pt-1 pb-1" style="font-size: 13px;">Accept</div>
+                <div class="col-5 bg-secondary rounded text-light pt-1 pb-1" style="font-size: 13px;">Delete</div>
+              </div>
+            </div>
+
+          </div>
+
+          
+
+        </div>
     </div>
-    <div class="row " id="stylecard">
-      <div class="col-6" id="titlecard">
-        <p>status </p>
-        <hr>
-        <p>region</p>
-        <hr>
-        <p>from</p>
-        <hr>
-        <p>duration</p>
-      </div>
-      <div class="col-6" id="description">
-        <p>processing</p>
-        <hr>
-        <p>Delhi</p>
-        <hr>
-        <p>27/12/2020</p>
-        <hr>
-        <p>2h30m</p>
-
-      </div>
-
-    </div>
-    <div class="row " id="stylecard">
-      <div class="col-6" id="titlecard">
-        <p>status </p>
-        <hr>
-        <p>region</p>
-        <hr>
-        <p>from</p>
-        <hr>
-        <p>duration</p>
-      </div>
-      <div class="col-6" id="description">
-        <p>processing</p>
-        <hr>
-        <p>Delhi</p>
-        <hr>
-        <p>27/12/2020</p>
-        <hr>
-        <p>2h30m</p>
-
-      </div>
-
-    </div>
-    <div class="row " id="stylecard">
-      <div class="col-6" id="titlecard">
-        <p>status </p>
-        <hr>
-        <p>region</p>
-        <hr>
-        <p>from</p>
-        <hr>
-        <p>duration</p>
-      </div>
-      <div class="col-6" id="description">
-        <p>processing</p>
-        <hr>
-        <p>Delhi</p>
-        <hr>
-        <p>27/12/2020</p>
-        <hr>
-        <p>2h30m</p>
-
-      </div>
-
-    </div>
-    <div class="row " id="stylecard">
-      <div class="col-6" id="titlecard">
-        <p>status </p>
-        <hr>
-        <p>region</p>
-        <hr>
-        <p>from</p>
-        <hr>
-        <p>duration</p>
-      </div>
-      <div class="col-6" id="description">
-        <p>processing</p>
-        <hr>
-        <p>Delhi</p>
-        <hr>
-        <p>27/12/2020</p>
-        <hr>
-        <p>2h30m</p>
-
-      </div>
-
-    </div>
-   </div>
-  
-
-  <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script>
+      let arr = [
+        {id:1,name:"onw"},
+        {id:2,name:"two"},
+        {id:3,name:"three"},
+        {id:4,name:"four"},
+        {id:5,name:"five"}
+      ]
+      console.log(arr)
+      let arr2 = arr.filter(item=>item.id!==4)
+      console.log(arr2)
+    </script>
 </body>
 </html>

@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import withState from '../hoc/withState'
-import axios from 'axios'
 
 class CreatePost extends Component {
     constructor(props) {
         super(props)
     
         this.state = {
+            // this two things need to be saved inside rootreducer
+            // not here in state
              file:[],
              filesrc:[],
         }
     }
-    componentDidUpdate(){
+    componentDidMount(){
     }
     handleOpen = (e)=>{
         e.preventDefault()
@@ -20,59 +21,57 @@ class CreatePost extends Component {
     handleSubmit = (e) => { 
         e.preventDefault();
         const {message} = e.target
-        console.log(this.state.file)
         this.props.socket.emit("newpost",{
-            data:this.state.file,
+            data:this.props.file,
             userid:this.props.userid,
             message:message.value
         })
-
-
-
-
-        // const formData = new FormData();
-        // this.state.file.forEach(item=>{ 
-        //     formData.append( 
-        //         "uploadImage", 
-        //         item.data
-        //     )
-        // })
-        // formData.append("message",message.value)
-        // formData.append("userid",this.props.userid)
-        // const {data} = await axios.post(`http://localhost:8080/post`, formData)
-        // alert("public upload done")
-        // console.log(data)
-        // this.setState({file:[],filesrc:[]})
     }; 
     handleChange = async (e) => {
         let newfile = e.target.files
         Object.keys(newfile).forEach(item=>{
             let id = (Math.random()).toString()
             console.log({id,img:newfile[item]})
-            // this.setState({file:[...this.state.file,{id,img:[newfile[item]]}]})
             if((newfile[item].type).search("image")!==-1 || (newfile[item].type).search("video")!==-1){
                 let fr = new FileReader()
                 fr.readAsDataURL(newfile[item])
-                fr.onload = () =>this.setState({
-                    filesrc:[...this.state.filesrc,{id,type:newfile[item].type,data:fr.result}],
-                    file:[...this.state.file,{
+                // fr.onload = () =>this.setState({
+                //     filesrc:[...this.state.filesrc,{id,type:newfile[item].type,data:fr.result}],
+                //     file:[...this.state.file,{
+                //         id,
+                //         name:newfile[item].name,
+                //         type:newfile[item].type,
+                //         data:newfile[item]
+                //     }]
+                // })
+
+                fr.onload = () =>{
+                    this.props.setFileSrc({
+                        id,
+                        type:newfile[item].type,
+                        data:fr.result})
+                    this.props.setFile({
                         id,
                         name:newfile[item].name,
                         type:newfile[item].type,
-                        data:newfile[item]
-                    }]
-                })
+                        data:newfile[item]})
+                }
             }else{
-                this.setState({file:[],filesrc:[]})
+                this.props.delFiles()
                 alert('invalid file type')
             }
         })
     }
+    componentDidUpdate(){
+        if(this.props.filesrc.length!==0)console.log(this.props.filesrc)
+        if(this.props.file.length!==0)console.log(this.props.file)
+    }
     removeItem = (e) =>{
-        this.setState({
-            filesrc:this.state.filesrc.filter(file=>file.id!==e.target.id),
-            file:this.state.filesrc.filter(file=>file.id!==e.target.id)
-        })
+        // this.setState({
+        //     filesrc:this.state.filesrc.filter(file=>file.id!==e.target.id),
+        //     file:this.state.filesrc.filter(file=>file.id!==e.target.id)
+        // })
+        this.props.delFileItem(e.target.id)
     }
     render() {
         return (
@@ -102,7 +101,7 @@ class CreatePost extends Component {
                             </div>
                         </div>
                     </div>
-                    {this.state.filesrc.length!==0?this.state.filesrc.map(img=>(
+                    {this.props.filesrc.length!==0?this.props.filesrc.map(img=>(
                         <div key={Math.random()} className="col-12 border-bottom p-0">
                         {img.type!=='video/mp4'?(<>
                         <img className="col-12 m-0 p-0" src={img.data} alt='img'/>

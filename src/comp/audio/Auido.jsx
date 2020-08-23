@@ -17,7 +17,7 @@ const Row = styled.div`
 const Video = styled.video`
   
 `;
-function Videoapp(props){
+function Audioapp(props){
   const [yourID, setYourID] = useStateIfMounted("");
   const [users, setUsers] = useStateIfMounted({});
   const [stream, setStream] = useStateIfMounted();
@@ -34,42 +34,27 @@ function Videoapp(props){
   useEffect(() => {
     socket.current = props.socket
     try{
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
-        function detectWebcam(callback) {
-          let md = navigator.mediaDevices;
-          if (!md || !md.enumerateDevices) return callback(false);
-          md.enumerateDevices().then(devices => {
-            callback(devices.some(device => 'videoinput' === device.kind));
-          })
+        setStream(stream);
+        if (userVideo.current) {
+          userVideo.current.srcObject = stream;
         }
-        
-        detectWebcam(hasWebcam=> {
-          if(hasWebcam){
-            setStream(stream);
-            if (userVideo.current) {
-              
-              userVideo.current.srcObject = stream;
-            }
-          }else{
-            alert("plug in webcam first")
-          }
-        })
       })
     }catch(err){
-      console.log("video not found")
+      console.log("audio not found")
       console.log(err.message)
     }
 
     if(socket.current!==null){
       
-        socket.current.on("yourID", (id) => {
+        socket.current.on("audio_yourID", (id) => {
             setYourID(id);
           })
-          socket.current.on("allUsers", ({users}) => {
+          socket.current.on("audio_allUsers", ({users}) => {
             setUsers(users);
           })
-          socket.current.on("useroffline",({userid})=>{
+          socket.current.on("audio_useroffline",({userid})=>{
             // alert('user offline')
             setCallAccepted(false)
             setCaller("")
@@ -77,7 +62,7 @@ function Videoapp(props){
             setReceivingCall(false)
           })
       
-          socket.current.on("hey", (data) => {
+          socket.current.on("audio_hey", (data) => {
             setReceivingCall(true);
             setCaller(data.from);
             setCallerSignal(data.signal);
@@ -85,8 +70,6 @@ function Videoapp(props){
           // console.log(props.curChat)
           if(props.curChat.socketid!==''){
             setSocket(props.curChat.socketid)
-          }else{
-            setSocket('')
           }
     }
   }, [props.socket,users,props.curChat]);
@@ -115,7 +98,7 @@ function Videoapp(props){
     });
 
     peer.on("signal", data => {
-      socket.current.emit("callUser", { userToCall: id, signalData: data, from: yourID })
+      socket.current.emit("audio_callUser", { userToCall: id, signalData: data, from: yourID })
     })
 
     peer.on("stream", stream => {
@@ -124,7 +107,7 @@ function Videoapp(props){
       }
     });
 
-    socket.current.on("callAccepted", signal => {
+    socket.current.on("audio_callAccepted", signal => {
       setCallAccepted(true);
       peer.signal(signal);
     })
@@ -184,7 +167,13 @@ function Videoapp(props){
   </div>;
   if (callAccepted===true) {
     PartnerVideo = (
-      <div className='remoteDiv'>
+      <div style={{
+        position:"absolute",
+        left:"0px",
+        width:"600px",
+        height:"350px",
+        backgroundColor:"black"
+      }}>
         <Video className='remoteVideo' playsInline ref={partnerVideo} autoPlay />
         <div className='controls row col-12 justify-content-center m-auto'>
           <button className='btn btn-danger rounded-circle m-auto'
@@ -230,4 +219,4 @@ const mapDispatchToProps = dispatch =>{
     delChatId:payload=>dispatch(delChatId(payload))
   }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(Videoapp)
+export default connect(mapStateToProps,mapDispatchToProps)(Audioapp)

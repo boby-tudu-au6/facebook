@@ -1,5 +1,4 @@
 const User = require("../models/userModel");
-const Group = require("../models/groupModel");
 const Message = require("../models/messageModel");
 const Post = require("../models/postModel");
 const Request = require('../models/requestModel')
@@ -9,16 +8,30 @@ const { v4: uuidv4 } = require('uuid');
 const cloudinary = require("./fileUpload/cloudinary/cloudinary")
 const bufferToString = require('./fileUpload/bufferToString/bufferToString');
 const { json } = require("express");
+const { post } = require("./getRoute");
 
 // User.findOne({_id:"5f2d37d5402ae80e8c46c21c"})
 // .populate("friend.friendId",'post')
 // .then(data=>{
 //   console.log(data.friend[0].friendId)
 //   });
-// let arr=['5f2d3856402ae80e8c46c21d','5f2d37d5402ae80e8c46c21c']
-// User.findOne({_id:{$in:arr.split(',')}})
-// .select('firstname')
-// .then(data=>console.log(data))
+let arr=['5f2d3856402ae80e8c46c21d','5f2d37d5402ae80e8c46c21c']
+let testdata = [{"friendId":[{"post":["5f3a25338ba5301ad8945247","5f3a46804a411515d07800f9","5f3a47759d0f422ec4802652"],"_id":"5f2d3856402ae80e8c46c21d"}]}
+]
+const testarr = []
+testdata.forEach(item=>{
+  let data = item.friendId[0].post
+  data.forEach(e=>testarr.push(e))
+// Post.find({_id:{$in:posts}})
+//     .sort({time:-1})
+//     .limit(1)
+//     .skip(0)
+})
+// Post.find({_id:{$in:testarr}})
+//     .sort({time:-1})
+//     .limit(1)
+//     .skip(0)
+//     .then(data=>console.log(data))
 
 module.exports = {
   // register route
@@ -130,44 +143,7 @@ module.exports = {
       return res.status(401).json({message:"invalid token"})
     }
   },
-  // post:async (req,res)=>{
-  //   const { originalname,buffer,mimetype } = req.files
-  //   const { message, userid } = req.body
-  //   try{
-  //     const data=[]
-  //     req.files.forEach(async element => {
-  //       const { originalname,buffer,mimetype } = element
-  //       const imageContent = bufferToString( originalname,buffer)
-  //       const { secure_url } = await cloudinary.uploader.upload(imageContent)
-  //       console.log("upload done")
-  //       data.push({type:mimetype,data:secure_url})
-  //       if(req.files.length===data.length){
-  //         data.push({type:'text',data:message})
-  //         const newPost = await Post.create({
-  //           from:userid,
-  //           data
-  //         })
-  //         console.log(req.body.message)
-  //         return res.status(200).json(data)
-  //       }
-  //     });
-  //   }catch(err){
-  //     res.status(400).json({message:"something wrong happened"})
-  //   }
-  // }
-  getpost:async (req,res)=>{
-    const {userid} = req.body
-    const allpost = await User.findOne({_id:"5f2d37d5402ae80e8c46c21c"})
-                    .populate("friend.friendId",'post')
-    res.status(200).json({post:allpost.friend[0].friendId})
-
-//     User.findOne({_id:"5f2d37d5402ae80e8c46c21c"})
-// .populate("friend.friendId",'post')
-// .then(data=>{
-//   console.log(data.friend[0].friendId)
-//   });
-  },
-
+  
   createGroup: async (req,res)=>{
     const {groupName,groupMember,type} = req.body;
 
@@ -185,8 +161,30 @@ module.exports = {
    }
   
 
+  },
+  getpost:async (req,res)=>{
+    const posts = []
+    const {userid,page} = req.body
+    const allpost = await User.findOne({_id:userid})
+                    .populate("friend.friendId",'post')
+                    .select("friendId post")
+    allpost.post.forEach(element=>posts.push(element))
+    allpost.friend.forEach(element => {
+      let newarr = element.friendId[0].post
+      newarr.forEach(item=>posts.push(item))
+    });
+    // console.log(posts)
+    const finalpost = await Post.find({_id:{$in:posts}})
+                      .sort({time:-1})
+                      .limit(5)
+                      .skip((page-1)*5)
+    res.status(200).json({length:posts.length,data:finalpost})
   }
 
+
+
+
+  
 };
 
 

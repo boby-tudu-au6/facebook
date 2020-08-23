@@ -19,10 +19,12 @@
     "font-awesome": "4.7.0",
     "material-ui-dropzone": "^3.3.1",
     "react": "^16.13.1",
+    "react-collapse": "^5.0.1",
     "react-debounce-input": "^3.2.2",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
     "react-redux": "7.2.1",
+    "react-responsive-pagination": "^1.1.0",
     "react-router": "^5.2.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "^3.4.1",
@@ -32,7 +34,8 @@
     "semantic-ui-react": "^1.2.0",
     "simple-peer": "^9.7.2",
     "socket.io-client": "^2.3.0",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "use-state-if-mounted": "^1.0.3"
   },
   "devDependencies": {
     "typescript": "3.8.3"
