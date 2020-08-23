@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Button } from "antd";
+// import { Button } from "antd";
 import PhotoIcon from "@material-ui/icons/Photo";
 import { makeStyles } from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
@@ -7,6 +7,7 @@ import Modal from "react-modal";
 import EditIcon from "@material-ui/icons/Edit";
 import CloseIcon from "@material-ui/icons/Close";
 import withState from "../hoc/withState";
+import SaveIcon from "@material-ui/icons/Save";
 import "semantic-ui-css/semantic.min.css";
 import {
   Segment,
@@ -17,6 +18,8 @@ import {
   TextArea,
   Form,
   Dropdown,
+  Button
+
 } from "semantic-ui-react";
 import "./style.css";
 const { State, Relationship, Language, Education } = require("./data");
@@ -32,7 +35,32 @@ class Profile extends PureComponent {
       cover: null,
       coverImageModal: false,
       show: false,
+      language:"NA",
+      bio:"",
+      education:"",
+      city:"",
+      status:""
+
     };
+  }
+  handleSave = (e)=>{
+    e.preventDefault()
+    let {language,bio,city,status,education} =this.state
+    let BIO = {
+      city,
+      bio,
+      language,
+      relationship :status,
+      education
+
+
+    }
+    this.props.socket.emit("updateBio", {
+      data: BIO,
+      userid: this.props.userid,
+    });
+    setTimeout(()=>{this.setState({show:false})},2000)
+
   }
   handleDisplay = (e) => {
     e.preventDefault();
@@ -43,12 +71,24 @@ class Profile extends PureComponent {
     this.setState({ coverImageModal: true });
   };
   handleEducation   =(e)=>{
+    this.setState({education:e.target.textContent})
+
 
   }
   handleState   =(e)=>{
+    this.setState({city:e.target.textContent})
 
   }
   handleStatus   =(e)=>{
+    this.setState({status:e.target.textContent})
+
+  }
+  handleLanguage   =(e)=>{
+    this.setState({language:e.target.textContent})
+
+  }
+  handleBio   =(e)=>{
+    this.setState({bio:e.target.value})
 
   }
  
@@ -104,6 +144,8 @@ class Profile extends PureComponent {
     alert("file upload done");
   };
   render() {
+    let {language,bio,city,status,education} =this.state
+    console.log(language,bio,city,status,education)
     return (
       <>
         <div class="container row col-12 m-auto pt-0">
@@ -220,7 +262,7 @@ class Profile extends PureComponent {
                     {" "}
                     <div>
                       <p className="mb-4">
-                        Bio:{" "}
+                      {city}
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -234,7 +276,7 @@ class Profile extends PureComponent {
                         />
                       </p>
                       <p className="mb-4">
-                        Bio:
+                      {status}
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -248,6 +290,7 @@ class Profile extends PureComponent {
                         />
                       </p>
                       <p className="mb-4">
+                      {education}
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -262,6 +305,7 @@ class Profile extends PureComponent {
                         />
                       </p>
                       <p className="mb-4">
+                      {language}
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -275,14 +319,33 @@ class Profile extends PureComponent {
                         />
                       </p>
                       <p className="mb-4">
+                      {bio}
                         <TextArea
                           style={{
                             display: this.state.show ? "block" : "none",
                             marginLeft: "-4rem",
                           }}
                           placeholder="enter your bio"
+                          onChange={this.handleBio}
+                          value={this.state.bio}
+                          name="name"
                         />
                       </p>
+                      <Button
+                inverted
+                color="green"
+                onClick={this.handleSave}
+                style={{
+                  
+                  width: "7rem",
+                  height: "3rem",
+                  outline: "none",
+                  display: this.state.show ? "block" : "none",
+                }}
+              >
+                <SaveIcon />
+                Save
+              </Button>
                     </div>
                   </div>
                 </div>
