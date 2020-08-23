@@ -47,7 +47,10 @@ export default class RegularPost extends Component {
         return (
             <div className="bg-light hid rounded mt-2">
               {this.props.data.data!==undefined?<>
+              
                 <div className="container-fluid border-bottom lightgray pt-1 rounded-top pb-1 pl-2 row m-auto">
+                 
+                 
                   <img className="col-1 rounded-circle p-0 ml-3" src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt='img'/>
                   <div className="col-10">
               <p className="small">{this.state.firstname}</p> 
@@ -55,6 +58,7 @@ export default class RegularPost extends Component {
                   </div>
               </div>
             <div className="col-12 border-bottom p-0">
+            <p className='col-12 ml-auto mr-auto mt-2 '>{this.props.data.data.message}</p>
               {this.props.data.data.arr.length>1?<>
                 <div id="demo" className="carousel slide" data-ride="carousel">
 
@@ -96,7 +100,7 @@ export default class RegularPost extends Component {
                 <video src={this.props.data.arr[0].data}></video>
               )}
             </div>
-            <p className='col-10 ml-auto mr-auto mt-2 mb-2'>{this.props.data.data.message}</p><hr/>
+           
             <div className="col-12 border-bottom row m-auto p-2 text-center">
               <div className="col-6"><p className='small'>{this.props.data.like.length} likes</p></div>
               <div className="col-6"><p className='small'>{this.props.data.comment.length} Comments</p></div>

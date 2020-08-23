@@ -7,7 +7,7 @@ import Modal from "react-modal";
 import EditIcon from "@material-ui/icons/Edit";
 import CloseIcon from "@material-ui/icons/Close";
 import withState from "../hoc/withState";
-import 'semantic-ui-css/semantic.min.css'
+import "semantic-ui-css/semantic.min.css";
 import {
   Segment,
   Header,
@@ -16,8 +16,10 @@ import {
   Label,
   TextArea,
   Form,
+  Dropdown,
 } from "semantic-ui-react";
 import "./style.css";
+const { State, Relationship, Language, Education } = require("./data");
 const Dp =
   "https://scontent.fpat3-1.fna.fbcdn.net/v/t1.0-1/p160x160/116347584_125646719220795_8469568938332917903_o.jpg?_nc_cat=111&_nc_sid=dbb9e7&_nc_ohc=Obur3lZkUlYAX-qkk2a&_nc_ht=scontent.fpat3-1.fna&_nc_tp=6&oh=5656be8ac8a107a378b3fda25111a89e&oe=5F567CB8";
 class Profile extends PureComponent {
@@ -27,18 +29,29 @@ class Profile extends PureComponent {
     this.state = {
       profileimageModel: false,
       file: null,
-      cover:null,
-      coverImageModal :false
-
+      cover: null,
+      coverImageModal: false,
+      show: false,
     };
   }
-  handleCover =(e)=>{
-    e.preventDefault()
-      this.setState({ coverImageModal: true });
-    
-
+  handleDisplay = (e) => {
+    e.preventDefault();
+    this.setState({ show: !this.state.show });
+  };
+  handleCover = (e) => {
+    e.preventDefault();
+    this.setState({ coverImageModal: true });
+  };
+  handleEducation   =(e)=>{
 
   }
+  handleState   =(e)=>{
+
+  }
+  handleStatus   =(e)=>{
+
+  }
+ 
 
   componentDidUpdate() {}
 
@@ -49,7 +62,9 @@ class Profile extends PureComponent {
       data: this.state.file,
       userid: this.props.userid,
     });
-    setTimeout(()=>{this.setState({profileimageModel:false})},3000)
+    setTimeout(() => {
+      this.setState({ profileimageModel: false });
+    }, 3000);
     console.log(this.state.file);
   };
   handleSubmit1 = (e) => {
@@ -60,8 +75,9 @@ class Profile extends PureComponent {
       userid: this.props.userid,
     });
     console.log(this.state.file);
-    setTimeout(()=>{this.setState({coverImageModal:false})},3000)
-   
+    setTimeout(() => {
+      this.setState({ coverImageModal: false });
+    }, 3000);
   };
   handleChangeFile = (event) => {
     const file = event.target.files[0];
@@ -83,7 +99,6 @@ class Profile extends PureComponent {
     };
     this.setState({ cover: data });
   };
-  
 
   handleFileUpload = (e) => {
     alert("file upload done");
@@ -94,49 +109,67 @@ class Profile extends PureComponent {
         <div class="container row col-12 m-auto pt-0">
           {/* 
 <!-- first column --> */}
-          <div class="col-8 row ">
+          <div class="col-9 row ">
             <div style={{ height: "30vh" }} class="row col-12">
               <div
                 class="col-12"
                 style={{
                   height: "80%",
-                  backgroundImage:
-                    `url(${localStorage.getItem('coverImg')})`,
+                  backgroundImage: `url(${localStorage.getItem("coverImg")})`,
                 }}
               >
-                
                 <Button style={{ marginLeft: "35rem", marginTop: "7rem" }}>
                   TimeLine
                 </Button>
-                <Button >TimeLine</Button>
-                <div style={{ marginTop: "-8rem",display:'flex',flexDirection:"column" }}>
+                <Button>TimeLine</Button>
+                <div
+                  style={{
+                    marginTop: "-8rem",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
                   {" "}
-                  <div><Button style={{marginTop:"0rem",backgroundColor:"black",color:"white"}} onClick={this.handleCover} >Upload Cover</Button></div>
-                 <div style={{marginTop:"-2.5rem"}}> <img
-                    style={{
-                      border: "white 4px solid",
-                      zIndex: 2,
-                      height: "10rem",
-                      width: "10rem",
-                    }}
-                    src={localStorage.getItem("profileImage")}
-                    class=" mt-5  rounded-circle"
-                    alt="image"
-                  />
-                  <Fab
-                    onClick={() => {
-                      this.setState({ profileimageModel: true });
-                    }}
-                    color="secondary"
-                    aria-label="edit"
-                    style={{
-                      outline: "none",
-                      marginTop: "8rem !important",
-                      marginLeft: "-3.5rem",
-                    }}
-                  >
-                    <EditIcon />
-                  </Fab></div>
+                  <div>
+                    <Button
+                      style={{
+                        marginTop: "0rem",
+                        backgroundColor: "black",
+                        color: "white",
+                      }}
+                      onClick={this.handleCover}
+                    >
+                      Upload Cover
+                    </Button>
+                  </div>
+                  <div style={{ marginTop: "-2.5rem" }}>
+                    {" "}
+                    <img
+                      style={{
+                        border: "white 4px solid",
+                        zIndex: 2,
+                        height: "10rem",
+                        width: "10rem",
+                      }}
+                      src={localStorage.getItem("profileImage")}
+                      class=" mt-5  rounded-circle"
+                      alt="image"
+                    />
+                    <Fab
+                      onClick={() => {
+                        this.setState({ profileimageModel: true });
+                      }}
+                      color="secondary"
+                      aria-label="edit"
+                      style={{
+                        outline: "none",
+                        marginTop: "8rem !important",
+                        marginLeft: "-3.5rem",
+                      }}
+                    >
+                      <EditIcon />
+                    </Fab>
+                  </div>
                 </div>
               </div>
               <div
@@ -154,11 +187,11 @@ class Profile extends PureComponent {
                 <Button style={{ color: "blue" }}>Friends</Button>
                 <Button style={{ color: "blue" }}>Photos</Button>
                 <Button style={{ color: "blue" }}> Archieves</Button>
-                <Button style={{ color: "blue" }}>More</Button>
+                <Button style={{ color: "blue" }}>More...</Button>
               </div>
               <hr class="col-12 pl-0 " style={{ marginTop: "-0.1rem" }} />
             </div>
-            <div class="col-4 full " style={{ marginTop: "5rem" }}>
+            <div class="col-5 full " style={{ marginTop: "5rem" }}>
               <div
                 class="col-12 row bg-light mb-2 rounded hid"
                 style={{ height: "30vh" }}
@@ -172,8 +205,88 @@ class Profile extends PureComponent {
               </div>
               <div
                 class="col-12 bg-light mb-2 rounded hid"
-                style={{ height: "20vh" }}
-              ></div>
+                style={{ height: "auto" }}
+              >
+                <Icon name="edit" onClick={this.handleDisplay} />
+                <div className="row">
+                  <div className="col-6">
+                    <p className="mb-4">City:</p>
+                    <p className="mb-4">Status:</p>
+                    <p className="mb-4">Education:</p>
+                    <p className="mb-4">Language:</p>
+                    <p className="mb-4">Bio:</p>
+                  </div>
+                  <div className="col-6">
+                    {" "}
+                    <div>
+                      <p className="mb-4">
+                        Bio:{" "}
+                        <Dropdown
+                          style={{
+                            display: this.state.show ? "block" : "none",
+                            marginLeft: "-4rem",
+                          }}
+                          placeholder="City"
+                          search
+                          selection
+                          options={State}
+                          onChange={this.handleState}
+                        />
+                      </p>
+                      <p className="mb-4">
+                        Bio:
+                        <Dropdown
+                          style={{
+                            display: this.state.show ? "block" : "none",
+                            marginLeft: "-4rem",
+                          }}
+                          placeholder="Status"
+                          search
+                          onChange={this.handleStatus}
+                          selection
+                          options={Relationship}
+                        />
+                      </p>
+                      <p className="mb-4">
+                        <Dropdown
+                          style={{
+                            display: this.state.show ? "block" : "none",
+                            marginLeft: "-4rem",
+                          }}
+                          placeholder="Education"
+                          search
+                          selection
+                          options={Education}
+                          onChange={this.handleEducation}
+
+                        />
+                      </p>
+                      <p className="mb-4">
+                        <Dropdown
+                          style={{
+                            display: this.state.show ? "block" : "none",
+                            marginLeft: "-4rem",
+                          }}
+                          placeholder="Language"
+                          search
+                          selection
+                          options={Language}
+                          onChange={this.handleLanguage}
+                        />
+                      </p>
+                      <p className="mb-4">
+                        <TextArea
+                          style={{
+                            display: this.state.show ? "block" : "none",
+                            marginLeft: "-4rem",
+                          }}
+                          placeholder="enter your bio"
+                        />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div
                 class="col-12 bg-light mb-2 rounded hid"
                 style={{ height: "20vh" }}
@@ -187,7 +300,7 @@ class Profile extends PureComponent {
             {/* 
 
   <!-- second column --> */}
-            <div class="col-8 full " style={{ marginTop: "5rem" }}>
+            <div class="col-7 full " style={{ marginTop: "5rem" }}>
               {/* <!-- create post section --> */}
               <div class="col-12 m-auto bg-light rounded p-0  ">
                 <div class="container-fluid border-bottom lightgray pt-1 rounded-top">
@@ -292,7 +405,7 @@ class Profile extends PureComponent {
               </div>
             </div>
           </div>
-          <div class="col-1 full"> </div>
+
           {/* <!-- third column --> */}
           <div class="col-3 full">
             <div class="container col-12 m-auto bg-light mb-2">

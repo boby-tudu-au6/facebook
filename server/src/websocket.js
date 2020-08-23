@@ -230,6 +230,24 @@ io.on('connection', socket => {
 
     io.sockets.emit("coverdone", {profilePost,Profile});
   });
+  socket.on('updateBio',async ({data,userid})=>{
+    console.log('function fired')
+    let arr = []
+    let newBio = await  User.findOneAndUpdate({
+      _id:userid
+    },{
+      city:data.city,
+      bio:data.bio,
+      relationship:data.relationship,
+      education:data.education,
+      language:data.language
+
+
+    })
+    socket.emit("updatebio", newBio)
+     
+
+  })
 
 
 
