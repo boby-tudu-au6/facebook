@@ -157,6 +157,7 @@ io.on('connection', socket => {
    socket.on("uploadProfile", async ({ data, userid }) => {
     console.log("data coming")
     const arr = [];
+    let message = 'profile picture'
 
     const imageContent = bufferToString(data.name, data.data);
     const { secure_url } = await cloudinary.uploader.upload(imageContent);
@@ -175,7 +176,8 @@ io.on('connection', socket => {
     console.log(Profile);
     const newpost = await Post.create({
       from: userid,
-      data: arr,
+      data:{arr, message}
+    
     });
    let profilePost= await User.updateOne(
       { _id: userid },
@@ -189,6 +191,47 @@ io.on('connection', socket => {
 
     io.sockets.emit("profiledone", {profilePost,Profile});
   });
+
+
+  socket.on("uploadCover", async ({ data, userid }) => {
+    console.log("data coming")
+    const arr = [];
+    let message = 'Cover picture Updated'
+
+    const imageContent = bufferToString(data.name, data.data);
+    const { secure_url } = await cloudinary.uploader.upload(imageContent);
+    arr.push({ type: data.type, data: secure_url, userid });
+
+    //   const {
+    //     DOB,
+    //     address,
+    //     gender
+    // } = data.body
+
+    const Profile = await User.findOneAndUpdate(
+      { _id: userid },
+      { coverImg: secure_url }
+    );
+    console.log(Profile);
+    const newpost = await Post.create({
+      from: userid,
+      data:{arr, message}
+    
+    });
+   let profilePost= await User.updateOne(
+      { _id: userid },
+      {
+        $push: {
+          post: { _id: newpost._id },
+        },
+      }
+    );
+    console.log(profilePost)
+
+    io.sockets.emit("coverdone", {profilePost,Profile});
+  });
+
+
 
    socket.on("newpost",({data,userid,message})=>{
      const arr = []

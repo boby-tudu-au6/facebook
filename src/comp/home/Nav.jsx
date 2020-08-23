@@ -21,6 +21,9 @@ class Nav extends Component {
     }
     
     async componentDidMount(){
+        this.state.socket.on("profiledone",data=>{console.log(data);  localStorage.setItem('profileImage',data.Profile.profilePic)  })
+        this.state.socket.on("coverdone",data=>{console.log(data);  localStorage.setItem('coverImg',data.Profile.coverImg)  })
+        
         this.props.getPost({userid:this.props.userid,page:this.props.pageid})
         this.props.history.listen((location)=>{
             if(location.pathname!=='/messages'){
