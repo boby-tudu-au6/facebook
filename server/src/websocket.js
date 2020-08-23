@@ -223,7 +223,7 @@ io.on('connection', socket => {
      }else{
       await Post.updateOne({_id},{$push:{like:userid}})
      }
-    socket.emit("postupdated")
+    io.sockets.emit("postupdated")
    })
 
    socket.on("postcomment",async ({userid,comment,_id})=>{
@@ -231,7 +231,7 @@ io.on('connection', socket => {
      await Post.updateOne({_id},{
       $push:{comment:{userid,comment,username:user.firstname}}
     })
-    socket.emit("postupdated")
+    io.sockets.emit("postupdated")
    })
 
   //  random functin for later use

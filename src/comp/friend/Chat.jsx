@@ -16,6 +16,7 @@ class Chat extends Component {
         this.props.getFriend(this.props.userid)
     }
     render() {
+        document.title = 'Chat|Apne'
         return (
 <div className='bg-light'>
     {this.props.userid!==null?(

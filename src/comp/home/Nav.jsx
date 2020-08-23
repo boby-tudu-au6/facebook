@@ -22,6 +22,9 @@ class Nav extends Component {
     
     async componentDidMount(){
         this.props.getPost({userid:this.props.userid,page:this.props.pageid})
+        this.state.socket.on("profiledone",data=>{
+            console.log(data)
+        })
         this.props.history.listen((location)=>{
             if(location.pathname!=='/messages'){
                 if(this.props.curChat!==null){
@@ -172,7 +175,27 @@ class Nav extends Component {
             </Link>
         </li>
         <li className="nav-item p-1 rounded navitem text-center justify-content-center" title='notification' data-toggle="tooltip">
-        {this.props.unseenpost!==0?<Badge data={this.props.unseenpost}/>:null}
+        {/* {this.props.unseenpost!==0?
+        <div style={{position:"absolute"}}>
+        <span 
+        className="badge-danger" 
+        style={{
+            position:'absolute',
+            left:'30px',
+            padding:"3px"
+        }}>{this.props.unseenpost}</span>
+        </div>
+        :null} */}
+        <div style={{position:"absolute"}}>
+        <span 
+        className="badge-danger rounded" 
+        style={{
+            position:'absolute',
+            left:'30px',
+            padding:"3px"
+        }}>3</span>
+        </div>
+        
         <button className="nav-link active btn m-auto" onClick={()=>{
             this.props.getPost({userid:this.props.userid,page:this.props.pageid})
             this.props.delUnseenPost()

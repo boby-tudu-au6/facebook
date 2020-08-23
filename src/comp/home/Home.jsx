@@ -7,12 +7,15 @@ import RefreshBtn from './RefreshBtn'
 
 class Home extends Component {
     render() {
+  document.title = 'Home|Apne'
         return (   
     <div>
         {this.props.userid===null?null:(
             <div className="container row col-12 m-auto pt-4">
                 <FirstColumn/>
-                <SecondColumn/>
+                <div className='col-6 p-0'>
+                    <SecondColumn/>
+                </div>
                 <ThirdColumn/>
                     {this.props.unseenpost!==0?(
                         <RefreshBtn/>
