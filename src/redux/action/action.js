@@ -4,10 +4,11 @@ export const DO_LOGIN = 'DO_LOGIN'
 export const CHECK_LOGIN = 'CHECK_LOGIN'
 export const LOGOUT = 'LOGOUT'
 export const SEARCH_FRIEND = 'SEARCH_FRIEND'
+export const SEARCH_FRIEND1 = 'SEARCH_FRIEND1'
 export const SEND_REQUEST = 'SEND_REQUEST'
 export const UPDATE_REQUEST = 'UPDATE_REQUEST'
+export const DEL_CHAT_ID = 'DEL_CHAT_ID'
 export const START_VIDEO = 'START_VIDEO'
-export const START_AUDIO = 'START_AUDIO'
 export const GET_REQUEST = 'GET_REQUEST'
 export const GET_NOTIFICATION = 'GET_NOTIFICATION'
 export const GET_FRIEND = 'GET_FRIEND'
@@ -17,15 +18,6 @@ export const SET_PROFILE = 'SET_PROFILE'
 export const SET_CHAT = 'SET_CHAT'
 export const SET_ONLINE_CHAT = 'SET_ONLINE_CHAT'
 export const SET_UNREAD = 'SET_UNREAD'
-export const SET_FILE = 'SET_FILE'
-export const SET_FILESRC = 'SET_FILESRC'
-export const SET_PAGEID = 'SET_PAGEID'
-export const INC_UNSEEN_POST = 'INC_UNSEEN_POST'
-export const DEL_UNSEEN_POST = 'DEL_UNSEEN_POST'
-export const DEL_CHAT_ID = 'DEL_CHAT_ID'
-export const DEL_FILES = 'DEL_FILES'
-export const DEL_FILE_ITEM = 'DEL_FILE_ITEM'
-export const DIS_SET_CHAT = 'DIS_SET_CHAT'
 
 
 
@@ -101,6 +93,20 @@ export const searchFriend = (payload) =>async dispatch=>{
         })
     }
 }
+export const searchFriend1 = (payload) =>async dispatch=>{
+    if(payload!==""){
+        const {data} = await Axios.post(`${baseurl}/search`,{q:payload})
+        return dispatch({
+            type:SEARCH_FRIEND1,
+            payload:data.user
+        })
+    }else{
+        return dispatch({
+            type:SEARCH_FRIEND1,
+            payload:null
+        })
+    }
+}
 export const setSocket = payload => dispatch =>{
     return dispatch({
         type:SET_SOCKET,
@@ -142,37 +148,11 @@ export const delChatId = (payload)=>async dispatch=>{
 export const startVideo = () => dispatch=>{
     return dispatch({type:START_VIDEO})
 }
-export const startAudio = () =>dispatch=>{
-    return dispatch({type:START_AUDIO})
-}
-export const getPost = ({userid,page}) => async dispatch =>{
-    const {data} = await Axios.post(`${baseurl}/getpost`,{userid,page})
-    return dispatch({
-        type:GET_POST,
-        payload:data
-    })
-}
-export const incUnseenPost = () =>dispatch=>{
-    return dispatch({type:INC_UNSEEN_POST})
-}
-export const delUnseenPost = () =>dispatch=>{
-    return dispatch({type:DEL_UNSEEN_POST})
-}
-export const setFile = payload =>dispatch =>{
-    return dispatch({type:SET_FILE,payload})
-}
-export const setFileSrc = payload =>dispatch =>{
-    return dispatch({type:SET_FILESRC,payload})
-}
-export const delFiles = ()=>dispatch=>{
-    return dispatch({type:DEL_FILES})
-}
-export const delFileItem = payload=>dispatch=>{
-    return dispatch({type:DEL_FILE_ITEM,payload})
-}
-export const setPageId = payload=>dispatch=>{
-    return dispatch({type:SET_PAGEID,payload})
-}
-export const disSetChat = () =>dispatch=>{
-    return dispatch({type:DIS_SET_CHAT})
+export const getPost = payload => async dispatch =>{
+    const {data} = await Axios.post(`${baseurl}/getpost`,{userid:payload})
+    console.log(data)
+    // return dispatch({
+    //     type:GET_POST,
+    //     payload:data
+    // })
 }

@@ -4,9 +4,8 @@ const Schema = mongoose.Schema
 const postSchema = new Schema({
   from:{ type: Schema.Types.ObjectId, ref: "user" },
   time:{type:Date, default:Date.now},
-  data:{type:Object},
-  // like:{type:Number,default:0},
-  like:[{type:String}],
+  data:[{type:Object}],
+  like:{type:Number,default:0},
   comment:[{type:Object}]
 })
 

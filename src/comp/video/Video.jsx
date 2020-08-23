@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import {connect} from 'react-redux';
 import Peer from "simple-peer";
 import styled from "styled-components";
-import {delChatId} from '../../redux/action/action'
-import { useStateIfMounted } from "use-state-if-mounted";
+import withState from '../hoc/withState'
+
 
 const Container = styled.div`
   height: auto;
@@ -18,14 +18,13 @@ const Video = styled.video`
   
 `;
 function Videoapp(props){
-  const [yourID, setYourID] = useStateIfMounted("");
-  const [users, setUsers] = useStateIfMounted({});
-  const [stream, setStream] = useStateIfMounted();
-  const [receivingCall, setReceivingCall] = useStateIfMounted(false);
-  const [caller, setCaller] = useStateIfMounted("");
-  const [callerSignal, setCallerSignal] = useStateIfMounted();
-  const [socketid, setSocket] = useStateIfMounted('');
-  const [callAccepted, setCallAccepted] = useStateIfMounted(false)
+    const [yourID, setYourID] = useState("");
+  const [users, setUsers] = useState({});
+  const [stream, setStream] = useState();
+  const [receivingCall, setReceivingCall] = useState(false);
+  const [caller, setCaller] = useState("");
+  const [callerSignal, setCallerSignal] = useState();
+  const [callAccepted, setCallAccepted] = useState(false)
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -33,33 +32,12 @@ function Videoapp(props){
 
   useEffect(() => {
     socket.current = props.socket
-    try{
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(stream => {
-        function detectWebcam(callback) {
-          let md = navigator.mediaDevices;
-          if (!md || !md.enumerateDevices) return callback(false);
-          md.enumerateDevices().then(devices => {
-            callback(devices.some(device => 'videoinput' === device.kind));
-          })
-        }
-        
-        detectWebcam(hasWebcam=> {
-          if(hasWebcam){
-            setStream(stream);
-            if (userVideo.current) {
-              
-              userVideo.current.srcObject = stream;
-            }
-          }else{
-            alert("plug in webcam first")
-          }
-        })
-      })
-    }catch(err){
-      console.log("video not found")
-      console.log(err.message)
-    }
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+      setStream(stream);
+      if (userVideo.current) {
+        userVideo.current.srcObject = stream;
+      }
+    })
 
     if(socket.current!==null){
       
@@ -82,14 +60,8 @@ function Videoapp(props){
             setCaller(data.from);
             setCallerSignal(data.signal);
           })
-          // console.log(props.curChat)
-          if(props.curChat.socketid!==''){
-            setSocket(props.curChat.socketid)
-          }else{
-            setSocket('')
-          }
     }
-  }, [props.socket,users,props.curChat]);
+  }, [props.socket,users]);
 
   
   function callPeer(id) {
@@ -128,7 +100,6 @@ function Videoapp(props){
       setCallAccepted(true);
       peer.signal(signal);
     })
-    // socket.current.on("imonline",()=>setSocket(props.curChat))
 
   }
 
@@ -158,48 +129,33 @@ function Videoapp(props){
       </div> 
     );
   }
-  let btnclass = 'btn rounded-circle btn-success'
-  let onclickfunc = ()=>callPeer(props.curChat.socketid)
-  let incomingCall=null;
-  if (receivingCall===true && callAccepted===false) {
-    btnclass = `${btnclass} box bounce-1`
-    onclickfunc = acceptCall
-    // incomingCall = (
-    //   <div className='box bounce-1'>
-    //     <h1>{caller} is calling you</h1>
-    //     <button onClick={acceptCall}>Accept</button>
-    //   </div>
-    // )
-  }
-  let PartnerVideo=<div style={{
-      position:"absolute",
-      left:"0px",
-      width:"600px",
-      height:"350px",
-      backgroundColor:"black"
-    }}>
-    {socketid!==''?<button className={btnclass}
-    style={{marginTop:"300px"}} onClick={onclickfunc}>
-      <i className="fas fa-phone"></i></button>:null}
-  </div>;
+
+  let PartnerVideo=null;
   if (callAccepted===true) {
     PartnerVideo = (
       <div className='remoteDiv'>
         <Video className='remoteVideo' playsInline ref={partnerVideo} autoPlay />
         <div className='controls row col-12 justify-content-center m-auto'>
-          <button className='btn btn-danger rounded-circle m-auto'
-          onClick={()=>{
-            if(props.curChat!==null){props.socket.emit("leaveroom",{room:props.curChat.room})}
-            props.delChatId(props.userid)
-            }}>
-            <i className="fas fa-phone-slash"></i>
+          <button className='btn btn-danger rounded-circle'>
+            <i class="fas fa-phone-slash"></i>
+          </button>
+          <button className='hangupBtn btn btn-primary rounded-circle'>
+            <i class="fas fa-phone-slash"></i>
           </button>
         </div>
       </div>
     );
   }
 
-  
+  let incomingCall=null;
+  if (receivingCall===true && callAccepted===false) {
+    incomingCall = (
+      <div>
+        <h1>{caller} is calling you</h1>
+        <button onClick={acceptCall}>Accept</button>
+      </div>
+    )
+  }
   return (
     <Container>
       <Row>
@@ -211,11 +167,9 @@ function Videoapp(props){
           if (key === yourID) {
             return null;
           }
-          if(key === props.curChat.socketid){
-            return (
-              <button key={Math.random()} onClick={() => callPeer(key)}>Call {key}</button>
-            );
-          }
+          return (
+            <button key={Math.random()} onClick={() => callPeer(key)}>Call {key}</button>
+          );
         }):null}
       </Row>
       <Row>
@@ -224,10 +178,5 @@ function Videoapp(props){
     </Container>
   );
 }
-const mapStateToProps = state=>{return {...state}}
-const mapDispatchToProps = dispatch =>{
-  return {
-    delChatId:payload=>dispatch(delChatId(payload))
-  }
-}
-export default connect(mapStateToProps,mapDispatchToProps)(Videoapp)
+// const mapStateToProps = state=>{return {...state}}
+export default withState(Videoapp)

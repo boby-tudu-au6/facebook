@@ -2,17 +2,14 @@ import React, { Component } from 'react'
 import ChatLeft from './ChatLeft'
 import ChatRight from './ChatRight'
 import Videoapp from '../video/Video'
-import Audioapp from '../audio/Auido'
+import withState from '../hoc/withState'
 import {connect} from 'react-redux'
-import { startVideo,startAudio } from '../../redux/action/action'
+import { startVideo } from '../../redux/action/action'
 
 class ChatWindow extends Component {
     componentDidUpdate(){
         if(this.props.video!==null){
             this.props.socket.emit('videostarted')
-        }
-        if(this.props.audio!==null){
-            this.props.socket.emit("audiostarted")
         }
     }
     
@@ -43,24 +40,22 @@ class ChatWindow extends Component {
                     <div className='navitem p-3 rounded col-6 text-center' data-toggle="tooltip" title='video call' onClick={this.props.startVideo}>
                         <i className="fas fa-video icon"></i>
                     </div>
-                    <div className='navitem p-3 rounded col-6 text-center' data-toggle="tooltip" title='audio call' onClick={this.props.startAudio}>
+                    <div className='navitem p-3 rounded col-6 text-center' data-toggle="tooltip" title='audio call'>
                         <i className="fas fa-phone icon"></i>
                     </div>
                 </div>
             </div>
             <div className='container col-12 pl-3 pr-3 pt-3 messageBox'>
-                {this.props.video===null && this.props.audio===null?
+                {this.props.video===null?
                 <>{this.props.messages.length===0?null:
                 this.props.messages.map(box=>{
                     if(box.from===this.props.userid){
                         return <ChatRight key={Math.random()} data={box}/>
                     }
                     return <ChatLeft key={Math.random()} data={box}/>
-                })}</>:
-                this.props.video!==null?<Videoapp/>:
-                <Audioapp/>}
+                })}</>:<Videoapp/>}
             </div>
-            {this.props.video===null && this.props.audio===null?
+            {this.props.video===null?
             <form onSubmit={this.sendMessage}
             className='form form-inline col-12 pl-1 pr-1 pt-2 pb-2 darkgray'>
                 <div className='col-1 p-0 pt-2 pb-2 rounded emoji_box'>
@@ -72,12 +67,10 @@ class ChatWindow extends Component {
         )
     }
 }
-const mapStateToProp = state =>{return {...state}}
-const mapDispatchToProps = dispatch =>{
-    return {
-        startVideo:()=>dispatch(startVideo()),
-        startAudio:()=>dispatch(startAudio())
-    }
-}
-// export default withState(ChatWindow)
-export default connect(mapStateToProp,mapDispatchToProps)(ChatWindow)
+// const mapStateToProp = state =>{return {...state}}
+// const mapDispatchToProps = dispatch =>{
+//     return {
+//         startVideo:()=>dispatch(startVideo())
+//     }
+// }
+export default withState(ChatWindow)

@@ -6,16 +6,9 @@ import withState from '../hoc/withState'
 
 
 class ThirdColumn extends Component {
-    componentDidUpdate(){
-        if(this.props.friend!==null){
-            let arr = []
-            this.props.friend.forEach(item=>arr.push(item.friendId[0]._id))
-        }
-    }
-    // componentDidMount(){
-    //     console.log(this.props.friend)
+    componentDidMount(){
         
-    // }
+    }
     render() {
         return (
 <div className="col-3 full rounded p-1">
