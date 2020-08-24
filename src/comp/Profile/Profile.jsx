@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-// import { Button } from "antd";
+ import ButtonA  from "antd/lib/button/button";
 import PhotoIcon from "@material-ui/icons/Photo";
 import { makeStyles } from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
@@ -18,7 +18,7 @@ import {
   TextArea,
   Form,
   Dropdown,
-  Button
+   Button
 
 } from "semantic-ui-react";
 import "./style.css";
@@ -144,8 +144,13 @@ class Profile extends PureComponent {
     alert("file upload done");
   };
   render() {
-    let {language,bio,city,status,education} =this.state
-    console.log(language,bio,city,status,education)
+    // let {language,bio,city,status,education} =this.state
+
+   if(localStorage.getItem('bio') !== null){
+    let Profile = localStorage.getItem('bio') 
+    var {language,bio,city,relationship,education} = Profile 
+   }  
+ 
     return (
       <>
         <div class="container row col-12 m-auto pt-0">
@@ -172,8 +177,8 @@ class Profile extends PureComponent {
                   }}
                 >
                   {" "}
-                  <div>
-                    <Button
+                  <div className="">
+                    <ButtonA
                       style={{
                         marginTop: "0rem",
                         backgroundColor: "black",
@@ -182,7 +187,7 @@ class Profile extends PureComponent {
                       onClick={this.handleCover}
                     >
                       Upload Cover
-                    </Button>
+                    </ButtonA>
                   </div>
                   <div style={{ marginTop: "-2.5rem" }}>
                     {" "}
@@ -276,7 +281,7 @@ class Profile extends PureComponent {
                         />
                       </p>
                       <p className="mb-4">
-                      {status}
+                      {relationship}
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",

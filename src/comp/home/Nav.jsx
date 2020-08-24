@@ -21,7 +21,7 @@ class Nav extends Component {
     }
     
     async componentDidMount(){
-        this.state.socket.on("updatebio",data=>{console.log(data);   })
+        this.state.socket.on("updatebio",data=>{console.log(data); localStorage.setItem('bio',data[0])  })
         this.state.socket.on("profiledone",data=>{console.log(data);  localStorage.setItem('profileImage',data.Profile.profilePic)  })
         this.state.socket.on("coverdone",data=>{console.log(data);  localStorage.setItem('coverImg',data.Profile.coverImg)  })
         
