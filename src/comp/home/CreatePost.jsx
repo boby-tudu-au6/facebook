@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import withState from '../hoc/withState'
+import {withRouter} from 'react-router-dom'
 
 class CreatePost extends Component {
     constructor(props) {
         super(props)
     
         this.state = {
-            // this two things need to be saved inside rootreducer
-            // not here in state
              file:[],
              filesrc:[],
         }
@@ -35,15 +34,6 @@ class CreatePost extends Component {
             if((newfile[item].type).search("image")!==-1 || (newfile[item].type).search("video")!==-1){
                 let fr = new FileReader()
                 fr.readAsDataURL(newfile[item])
-                // fr.onload = () =>this.setState({
-                //     filesrc:[...this.state.filesrc,{id,type:newfile[item].type,data:fr.result}],
-                //     file:[...this.state.file,{
-                //         id,
-                //         name:newfile[item].name,
-                //         type:newfile[item].type,
-                //         data:newfile[item]
-                //     }]
-                // })
 
                 fr.onload = () =>{
                     this.props.setFileSrc({
@@ -67,10 +57,6 @@ class CreatePost extends Component {
         if(this.props.file.length!==0)console.log(this.props.file)
     }
     removeItem = (e) =>{
-        // this.setState({
-        //     filesrc:this.state.filesrc.filter(file=>file.id!==e.target.id),
-        //     file:this.state.filesrc.filter(file=>file.id!==e.target.id)
-        // })
         this.props.delFileItem(e.target.id)
     }
     render() {
@@ -130,4 +116,4 @@ class CreatePost extends Component {
     }
 }
 
-export default withState(CreatePost)
+export default withState(withRouter(CreatePost))

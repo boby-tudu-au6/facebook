@@ -12,8 +12,8 @@ export const GET_REQUEST = 'GET_REQUEST'
 export const GET_NOTIFICATION = 'GET_NOTIFICATION'
 export const GET_FRIEND = 'GET_FRIEND'
 export const GET_POST = 'GET_POST'
+export const GET_PROFILE = 'GET_PROFILE'
 export const SET_SOCKET = 'SET_SOCKET'
-export const SET_PROFILE = 'SET_PROFILE'
 export const SET_CHAT = 'SET_CHAT'
 export const SET_ONLINE_CHAT = 'SET_ONLINE_CHAT'
 export const SET_UNREAD = 'SET_UNREAD'
@@ -25,6 +25,7 @@ export const DEL_UNSEEN_POST = 'DEL_UNSEEN_POST'
 export const DEL_CHAT_ID = 'DEL_CHAT_ID'
 export const DEL_FILES = 'DEL_FILES'
 export const DEL_FILE_ITEM = 'DEL_FILE_ITEM'
+export const DEL_PROFILE = 'DEL_PROFILE'
 export const DIS_SET_CHAT = 'DIS_SET_CHAT'
 
 
@@ -32,6 +33,17 @@ export const DIS_SET_CHAT = 'DIS_SET_CHAT'
 
 export const baseurl = "http://localhost:8080"
 
+export const getProfile = payload =>async dispatch=>{
+    const {data} = await Axios.post(`${baseurl}/getprofile`,{userid:payload})
+    return dispatch({
+        type:GET_PROFILE,
+        payload:data
+    })
+}
+
+export const delProfile = () =>dispatch=>{
+    return dispatch({type:DEL_PROFILE})
+}
 export const doLogin = ({phoneEmail,password}) => async dispatch =>{
     let firstdata = 'phone';
         const testdata = phoneEmail.value.search("@")
@@ -58,7 +70,11 @@ export const checkLogin =()=>async dispatch=>{
             const {data} = await Axios.post(`${baseurl}/checklogin`,{user})
             const username = data[0].firstname
             const userid = data[0]._id
-            return dispatch({type:CHECK_LOGIN,payload:{user,username,userid}})
+            const profilePic = data[0].profilePic
+            const coverImg = data[0].coverImg
+            return dispatch({type:CHECK_LOGIN,payload:{
+                user,username,userid,profilePic,coverImg
+            }})
         }
     }catch(err){
         console.log('invalid token')

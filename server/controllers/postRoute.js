@@ -179,6 +179,23 @@ module.exports = {
                       .limit(5)
                       .skip((page-1)*5)
     res.status(200).json({length:posts.length,data:finalpost})
+  },
+  getProfile:async (req,res)=>{
+    const {userid} = req.body
+    const user = await User.findOne({_id:userid})
+    res.status(200).json(user)
+  },
+  getName:async (req,res)=>{
+    const {id} = req.body
+    const user = await User.findOne({_id:id})
+
+    res.status(200).json({firstname:user.firstname,lastname:user.lastname})
+  },
+  getPostImg:async(req,res)=>{
+    const {arr} = req.body
+    const post = await Post.find({_id:{$in:arr}})
+    .select("data")
+    res.status(200).json({post})
   }
 
 

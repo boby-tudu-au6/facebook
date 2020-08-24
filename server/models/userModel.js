@@ -14,8 +14,13 @@ const userSchema = new Schema({
   friendRequest:[{type:Schema.Types.ObjectId,ref:"request"}],
   notification:[{type:Object}],
   socketid:{type:String,default:""},
-  profilePic:String,
-  coverImg:String,
+  profilePic:{
+    type:String,
+    default :"https://www.w3schools.com/bootstrap4/img_avatar3.png"},
+  coverImg:{
+    type:String,
+    default:"https://thumbor.forbes.com/thumbor/711x459/https://specials-images.forbesimg.com/dam/imageserve/855870076/960x0.jpg?fit=scale"
+  },
   lastLogin:{ type: Date, default: Date.now },
   place:String,
   curChat:{type:Object},

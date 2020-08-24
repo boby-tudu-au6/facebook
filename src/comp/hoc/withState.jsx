@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost, incUnseenPost, delUnseenPost, setFile, setFileSrc, delFiles, delFileItem,setPageId, disSetChat } from '../../redux/action/action'
+import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost, incUnseenPost, delUnseenPost, setFile, setFileSrc, delFiles, delFileItem,setPageId, disSetChat,getProfile, delProfile } from '../../redux/action/action'
 
 function withState(Component) {
     const mapStateToProps = state =>{return {...state}}
@@ -19,6 +19,7 @@ function withState(Component) {
             setFileSrc:payload=>dispatch(setFileSrc(payload)),
             delFileItem:payload=>dispatch(delFileItem(payload)),
             setPageId:payload=>dispatch(setPageId(payload)),
+            getProfile:payload=>dispatch(getProfile(payload)),
             checkLogin:()=>dispatch(checkLogin()),
             sendRequest:()=>dispatch(sendRequest()),
             logout:()=>dispatch(logout()),
@@ -26,8 +27,8 @@ function withState(Component) {
             incUnseenPost:()=>dispatch(incUnseenPost()),
             delUnseenPost:()=>dispatch(delUnseenPost()),
             delFiles:()=>dispatch(delFiles()),
+            delProfile:()=>dispatch(delProfile()),
             disSetChat:()=>dispatch(disSetChat())
-        
         }
     }
     return connect(mapStateToProps,mapDispatchToProps)(
@@ -74,6 +75,11 @@ function withState(Component) {
                     setPageId={this.props.setPageId}
                     pageid={this.props.pageid}
                     disSetChat={this.props.disSetChat}
+                    delProfile={this.props.delProfile}
+                    getProfile={this.props.getProfile}
+                    userdata={this.props.userdata}
+                    profilePic={this.props.profilePic}
+                    coverImg={this.props.coverImg}
                 />)
             }
         }

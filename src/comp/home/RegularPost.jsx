@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import {UnmountClosed} from 'react-collapse';
- 
-// ...
-
+import Axios from 'axios'
+import {baseurl} from '../../redux/action/action'
 
 export default class RegularPost extends Component {
     constructor(props) {
@@ -14,7 +13,9 @@ export default class RegularPost extends Component {
         date:'',
         likes:0,
         comments:0,
-        isOpened:false
+        isOpened:false,
+        firstname:'',
+        lastname:''
       }
     }
     componentWillUnmount() {this.setState = (state,callback)=>{return;};}
@@ -27,23 +28,25 @@ export default class RegularPost extends Component {
         userid:this.props.userid
       })
     }
+    getName = async(id)=>{
+      const {data} = await Axios.post(`${baseurl}/getname`,{id})
+      let d = new Date(this.props.data.time)
+      this.setState({
+        firstname:data.firstname,
+        lastname:data.lastname,
+        date:(d.toUTCString()).slice(0,-4)
+      })
+    }
     componentDidMount(){
       if(this.props.friends!==undefined){this.setState({friends:this.props.friends})}
       let d = new Date(this.props.data.time)
       if(this.props.data.from===this.props.userid){
         this.setState({firstname:'you',date:(d.toUTCString()).slice(0,-4)})
       }else{
-        setTimeout(()=>{
-          this.props.friends.forEach(item=>{
-            if(item[0]._id===this.props.data.from){
-              this.setState({firstname:item[0].firstname,date:(d.toUTCString()).slice(0,-4)})
-            }
-          })
-        },1000)
+        this.getName(this.props.data.from)
       }
     }
     render() {
-      
         return (
             <div className="bg-light hid rounded mt-2">
               {this.props.data.data!==undefined?<>
@@ -52,9 +55,9 @@ export default class RegularPost extends Component {
                  
                  
                   <img className="col-1 rounded-circle p-0 ml-3" src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt='img'/>
-                  <div className="col-10">
-              <p className="small">{this.state.firstname}</p> 
-              <p className="extra_small">{this.state.date}</p>
+                  <div className="col-10 mt-1">
+              <p className="small m-0">{this.state.firstname} {this.state.lastname}</p> 
+              <p className="extra_small m-0">{this.state.date}</p>
                   </div>
               </div>
             <div className="col-12 border-bottom p-0">

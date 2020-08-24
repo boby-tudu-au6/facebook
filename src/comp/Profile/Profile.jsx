@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
  import ButtonA  from "antd/lib/button/button";
 import PhotoIcon from "@material-ui/icons/Photo";
 import { makeStyles } from "@material-ui/core/styles";
+import {Redirect, withRouter} from 'react-router-dom'
 import Fab from "@material-ui/core/Fab";
 import Modal from "react-modal";
 import EditIcon from "@material-ui/icons/Edit";
@@ -9,6 +10,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import withState from "../hoc/withState";
 import SaveIcon from "@material-ui/icons/Save";
 import "semantic-ui-css/semantic.min.css";
+import SecondColumn from '../home/SecondColumn'
+import {baseurl} from '../../redux/action/action'
 import {
   Segment,
   Header,
@@ -22,6 +25,8 @@ import {
 
 } from "semantic-ui-react";
 import "./style.css";
+import { getPost } from "../../redux/action/action";
+import Axios from "axios";
 const { State, Relationship, Language, Education } = require("./data");
 const Dp =
   "https://scontent.fpat3-1.fna.fbcdn.net/v/t1.0-1/p160x160/116347584_125646719220795_8469568938332917903_o.jpg?_nc_cat=111&_nc_sid=dbb9e7&_nc_ohc=Obur3lZkUlYAX-qkk2a&_nc_ht=scontent.fpat3-1.fna&_nc_tp=6&oh=5656be8ac8a107a378b3fda25111a89e&oe=5F567CB8";
@@ -36,11 +41,13 @@ class Profile extends PureComponent {
       coverImageModal: false,
       show: false,
       language:"NA",
-      bio:"",
-      education:"",
-      city:"",
-      status:""
-
+      bio:"NA",
+      education:"NA",
+      city:"NA",
+      status:"NA",
+      postImg:[],
+      profilePic:'',
+      coverImg:''
     };
   }
   handleSave = (e)=>{
@@ -52,8 +59,6 @@ class Profile extends PureComponent {
       language,
       relationship :status,
       education
-
-
     }
     this.props.socket.emit("updateBio", {
       data: BIO,
@@ -91,9 +96,27 @@ class Profile extends PureComponent {
     this.setState({bio:e.target.value})
 
   }
- 
+  getPostImage = (arr)=>{
+    Axios.post(`${baseurl}/getpostimg`,{arr})
+    .then(({data})=>{
+      let post = []
+      data.post.forEach(item=>item.data.arr.forEach(ele=>post.push(ele.data)))
+      this.setState({postImg:post})
+    })
+  }
 
-  componentDidUpdate() {}
+  componentDidUpdate(preProps){
+    if(this.props.userdata===null){
+      this.props.history.push("/")
+    }
+    if(preProps.userdata!==this.props.userdata && this.props.userdata!==null){
+      this.setState({
+        profilePic:this.props.userdata.profilePic,
+        coverImg:this.props.userdata.coverImg
+      })
+      this.getPostImage(this.props.userdata.post)
+    }
+  }
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -146,23 +169,28 @@ class Profile extends PureComponent {
   render() {
     // let {language,bio,city,status,education} =this.state
 
-   if(localStorage.getItem('bio') !== null){
-    let Profile = localStorage.getItem('bio') 
-    var {language,bio,city,relationship,education} = Profile 
-   }  
- 
+  //  if(localStorage.getItem('bio') !== null){
+  //   let Profile = localStorage.getItem('bio') 
+  //   var {language,bio,city,relationship,education} = Profile 
+  //  }  
+  if(this.props.userdata !== null){
+    var {language,bio,city,relationship,education,profilePic,coverImg} = this.props.userdata
+   } 
     return (
       <>
         <div class="container row col-12 m-auto pt-0">
           {/* 
 <!-- first column --> */}
-          <div class="col-9 row ">
+          <div class="col-9 row m-auto">
             <div style={{ height: "30vh" }} class="row col-12">
               <div
                 class="col-12"
                 style={{
                   height: "80%",
-                  backgroundImage: `url(${localStorage.getItem("coverImg")})`,
+                  backgroundImage: `url(${this.state.coverImg})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize:"cover",
+                  backgroundPosition:"center"
                 }}
               >
                 <Button style={{ marginLeft: "35rem", marginTop: "7rem" }}>
@@ -198,10 +226,11 @@ class Profile extends PureComponent {
                         height: "10rem",
                         width: "10rem",
                       }}
-                      src={localStorage.getItem("profileImage")}
+                      src={this.state.profilePic}
                       class=" mt-5  rounded-circle"
                       alt="image"
                     />
+                    {/* https://www.w3schools.com/bootstrap4/img_avatar3.png */}
                     <Fab
                       onClick={() => {
                         this.setState({ profileimageModel: true });
@@ -238,23 +267,15 @@ class Profile extends PureComponent {
               </div>
               <hr class="col-12 pl-0 " style={{ marginTop: "-0.1rem" }} />
             </div>
-            <div class="col-5 full " style={{ marginTop: "5rem" }}>
-              <div
-                class="col-12 row bg-light mb-2 rounded hid"
-                style={{ height: "30vh" }}
-              >
-                <PhotoIcon
-                  className="col-12"
-                  style={{ color: "green", marginLeft: "-6rem" }}
-                />
-                <img class="col-6" src={Dp} alt="dp1" />
-                <img class="col-6" src={Dp} alt="dp2" />
-              </div>
-              <div
+            <div 
+            className='row m-auto col-12 text-center p-0 pt-5 justify-content-center' style={{marginTop:"30px"}}>
+            <div class="col-5 full ">
+            <div
                 class="col-12 bg-light mb-2 rounded hid"
                 style={{ height: "auto" }}
               >
-                <Icon name="edit" onClick={this.handleDisplay} />
+                {this.props.userdata!==null?
+                this.props.userid===this.props.userdata._id?<Icon name="edit" onClick={this.handleDisplay} />:null:null}
                 <div className="row">
                   <div className="col-6">
                     <p className="mb-4">City:</p>
@@ -266,8 +287,9 @@ class Profile extends PureComponent {
                   <div className="col-6">
                     {" "}
                     <div>
-                      <p className="mb-4">
-                      {city}
+                      <div className="mb-4">
+                        {/* this is city data from database */}
+                      <p>{city}</p>
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -279,7 +301,7 @@ class Profile extends PureComponent {
                           options={State}
                           onChange={this.handleState}
                         />
-                      </p>
+                      </div>
                       <p className="mb-4">
                       {relationship}
                         <Dropdown
@@ -356,20 +378,24 @@ class Profile extends PureComponent {
                 </div>
               </div>
               <div
-                class="col-12 bg-light mb-2 rounded hid"
-                style={{ height: "20vh" }}
-              ></div>
-              <div
-                class="col-12 bg-light mb-2 rounded hid"
-                style={{ height: "20vh" }}
-              ></div>
+                class="col-12 row bg-light mb-2 rounded"
+                style={{ height: "auto" }}
+              >
+                {this.state.postImg!==null?this.state.postImg.map(item=>
+                <img class="col-6" src={item} alt="dp2" />):null}
+              </div>
+              
             </div>
 
-            {/* 
-
-  <!-- second column --> */}
-            <div class="col-7 full " style={{ marginTop: "5rem" }}>
-              {/* <!-- create post section --> */}
+            <div className='col-7 p-0 text-left'>
+              {
+                this.props.userdata!==null?
+                <SecondColumn/>
+                :null
+              }
+            </div>
+            </div>
+            {/* <div class="col-7 full " style={{ marginTop: "5rem" }}>
               <div class="col-12 m-auto bg-light rounded p-0  ">
                 <div class="container-fluid border-bottom lightgray pt-1 rounded-top">
                   <h6>Create post</h6>
@@ -404,7 +430,6 @@ class Profile extends PureComponent {
                 </div>
               </div>
 
-              {/* <!--          regular post section--> */}
               <div class="bg-light hid rounded mt-2">
                 <div class="container-fluid border-bottom lightgray pt-1 rounded-top pb-1 pl-2 row m-auto">
                   <img
@@ -439,7 +464,6 @@ class Profile extends PureComponent {
                     <p class="small">200 Comments</p>
                   </div>
                 </div>
-                {/* <!--            like comment section--> */}
                 <div class="col-12 p-0 border-bottom row m-auto">
                   <div class="col-6 p-1 text-center">
                     <i class="fa fa-thumbs-o-up"></i>
@@ -471,7 +495,7 @@ class Profile extends PureComponent {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* <!-- third column --> */}
@@ -535,122 +559,12 @@ class Profile extends PureComponent {
                   </div>
                 </div>
               </div>
-
-              <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
-                <img
-                  src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                  alt=""
-                  class="col-3 bg-secondary rounded-circle p-0"
-                />
-                <div class="col-9">
-                  <p class="text-secondary">ManasRanjan</p>
-                  <p class="text-secondary" style={{ fontSize: "10px" }}>
-                    From Jamshedpur
-                  </p>
-                </div>
-                <div class="row col-12 p-1 m-auto justify-content-between">
-                  <div
-                    class="col-5 bg-primary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    class="col-5 bg-secondary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
-              <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
-                <img
-                  src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                  alt=""
-                  class="col-3 bg-secondary rounded-circle p-0"
-                />
-                <div class="col-9">
-                  <p class="text-secondary">ManasRanjan</p>
-                  <p class="text-secondary" style={{ fontSize: "10px" }}>
-                    From Jamshedpur
-                  </p>
-                </div>
-                <div class="row col-12 p-1 m-auto justify-content-between">
-                  <div
-                    class="col-5 bg-primary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    class="col-5 bg-secondary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
-              <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
-                <img
-                  src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                  alt=""
-                  class="col-3 bg-secondary rounded-circle p-0"
-                />
-                <div class="col-9">
-                  <p class="text-secondary">ManasRanjan</p>
-                  <p class="text-secondary" style={{ fontSize: "10px" }}>
-                    From Jamshedpur
-                  </p>
-                </div>
-                <div class="row col-12 p-1 m-auto justify-content-between">
-                  <div
-                    class="col-5 bg-primary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    class="col-5 bg-secondary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
-              <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
-                <img
-                  src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                  alt=""
-                  class="col-3 bg-secondary rounded-circle p-0"
-                />
-                <div class="col-9">
-                  <p class="text-secondary">ManasRanjan</p>
-                  <p class="text-secondary" style={{ fontSize: "10px" }}>
-                    From Jamshedpur
-                  </p>
-                </div>
-                <div class="row col-12 p-1 m-auto justify-content-between">
-                  <div
-                    class="col-5 bg-primary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    class="col-5 bg-secondary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
         <Modal
           className="Modal"
           isOpen={this.state.profileimageModel}
-          onRequestClose={true}
         >
           <Segment placeholder className="row">
             <button
@@ -694,7 +608,6 @@ class Profile extends PureComponent {
         <Modal
           className="Modal"
           isOpen={this.state.coverImageModal}
-          onRequestClose={true}
         >
           <Segment placeholder className="row">
             <button
@@ -740,4 +653,4 @@ class Profile extends PureComponent {
   }
 }
 
-export default withState(Profile);
+export default withState(withRouter(Profile));

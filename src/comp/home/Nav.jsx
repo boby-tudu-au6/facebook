@@ -21,24 +21,40 @@ class Nav extends Component {
     }
     
     async componentDidMount(){
-        this.state.socket.on("updatebio",data=>{console.log(data); localStorage.setItem('bio',data[0])  })
-        this.state.socket.on("profiledone",data=>{console.log(data);  localStorage.setItem('profileImage',data.Profile.profilePic)  })
-        this.state.socket.on("coverdone",data=>{console.log(data);  localStorage.setItem('coverImg',data.Profile.coverImg)  })
-        
-        this.props.getPost({userid:this.props.userid,page:this.props.pageid})
-        this.state.socket.on("profiledone",data=>{
-            console.log(data)
-        })
+        if(this.props.location.pathname==='/'){
+            this.props.getPost({userid:this.props.userid,page:this.props.pageid})
+        }
         this.props.history.listen((location)=>{
             if(location.pathname!=='/messages'){
                 if(this.props.curChat!==null){
                     this.state.socket.emit("leaveroom",{room:this.props.curChat.room})
                 }
-                // this.props.delChatId(this.props.userid)
+            }
+            if(location.pathname==='/'){
+                this.props.getPost({userid:this.props.userid,page:this.props.pageid})
             }
         })
         this.props.getRequest(this.props.userid)
-        this.state.socket.on('imonline',()=>{setTimeout(()=>this.props.getFriend(this.props.userid),2000)})
+        
+        this.state.socket.on("updatebio",({userid})=>{
+            if(this.props.userid===userid){
+                this.props.getProfile(userid)
+            } 
+        })
+        this.state.socket.on("profiledone",({userid})=>{
+            if(this.props.userid===userid){
+                this.props.getProfile(userid)
+            } 
+        })
+        this.state.socket.on("coverdone",({userid})=>{
+            if(this.props.userid===userid){
+                this.props.getProfile(userid)
+            }
+        }); 
+        
+        this.state.socket.on('imonline',()=>{
+            setTimeout(()=>this.props.getFriend(this.props.userid),2000)
+        })
         this.state.socket.on("userDisconnected",({testuser})=>{
             if(this.props.friendId.includes(testuser._id)){
                 if(this.props.curChat!==null){
@@ -56,7 +72,6 @@ class Nav extends Component {
             let arr = []
             this.props.friend.forEach(item=>arr.push(item.friendId[0]._id))
             if(data.from===this.props.userid || arr.includes(data.from)){
-                alert("new post arrived")
                 this.props.incUnseenPost()
             }
         })
@@ -92,9 +107,7 @@ class Nav extends Component {
                 )
         })
     }
-    componentDidUpdate(){
-        
-    }
+    
     render() {
         let chats=0;
         if(this.props.messages.lenght!==0){
@@ -113,6 +126,7 @@ class Nav extends Component {
             className='form-control border-0 col-11 pt-0 rounded-0'
             placeholder="search"
             minLength={1}
+            ref='searchInput'
             debounceTimeout={1000}
             onChange={e => this.props.searchFriend(e.target.value)} />
             <button type="submit" className="btn btn-light text-secondary border-0 form-control col-1 m-0 rounded-0">
@@ -142,14 +156,16 @@ class Nav extends Component {
                             time:(new Date()).toLocaleString})
                         }
                     }
-                    >Send request</button>:
-                    <button
-                    className='btn btn-primary btn-sm'>View profile
-                    </button>}
-                    <button 
-                    className='btn btn-danger btn-sm' 
-                    onClick={()=>console.log((new Date()).toLocaleString())}
-                    >Visit profile</button>
+                    >Send request</button>:null
+                    }
+                    <Link to='/profile'
+                    className='btn btn-danger btn-sm'
+                    onClick={()=>{
+                        console.log(`${e._id} ${this.props.userid}`)
+                        this.props.delProfile()
+                        this.props.getProfile(e._id)
+                    }} 
+                    >Visit profile</Link>
                     </div>
                 </div>
             </div>)
@@ -157,9 +173,11 @@ class Nav extends Component {
         </div>
         </div>
     <ul className="navbar-nav col-6 ml-2">
-        <Link to='/profile' className="nav-item col-3 p-0 d-flex" title='profile' data-toggle="tooltip">
+        <Link to='/profile' className="nav-item col-3 p-0 d-flex" title='profile' data-toggle="tooltip" onClick={()=>{
+            this.props.delProfile()
+            this.props.getProfile(this.props.userid)}}>
             <div className="col-4 p-1">
-                <img src={localStorage.getItem('profileImage')} alt="" className="rounded-circle p-0" style={{width:"35px",height:"35px"}}/>
+                <img src={this.props.profilePic} alt="" className="rounded-circle p-0" style={{width:"35px",height:"35px"}}/>
             </div>
             <div className="col-10 p-0">
         <p className="nav-link text-light" href="/g">{ this.props.username }</p>
@@ -181,26 +199,17 @@ class Nav extends Component {
             </Link>
         </li>
         <li className="nav-item p-1 rounded navitem text-center justify-content-center" title='notification' data-toggle="tooltip">
-        {/* {this.props.unseenpost!==0?
-        <div style={{position:"absolute"}}>
-        <span 
-        className="badge-danger" 
-        style={{
-            position:'absolute',
-            left:'30px',
-            padding:"3px"
-        }}>{this.props.unseenpost}</span>
-        </div>
-        :null} */}
-        <div style={{position:"absolute"}}>
-        <span 
-        className="badge-danger rounded" 
-        style={{
-            position:'absolute',
-            left:'30px',
-            padding:"3px"
-        }}>3</span>
-        </div>
+        {this.props.unseenpost!==0?
+            <div style={{position:"absolute"}}>
+                <span 
+                className="badge-danger rounded" 
+                style={{
+                    position:'absolute',
+                    left:'30px',
+                    padding:"3px"
+                }}>{this.props.unseenpost}</span>
+            </div>
+        :null}
         
         <button className="nav-link active btn m-auto" onClick={()=>{
             this.props.getPost({userid:this.props.userid,page:this.props.pageid})

@@ -163,21 +163,14 @@ io.on('connection', socket => {
     const { secure_url } = await cloudinary.uploader.upload(imageContent);
     arr.push({ type: data.type, data: secure_url, userid });
 
-    //   const {
-    //     DOB,
-    //     address,
-    //     gender
-    // } = data.body
-
     const Profile = await User.findOneAndUpdate(
       { _id: userid },
       { profilePic: secure_url },
       {new:true},
       (err,Profile)=>{
-        io.sockets.emit("profiledone", {Profile});
+        io.sockets.emit("profiledone", {userid});
       }
     );
-    console.log(Profile);
     const newpost = await Post.create({
       from: userid,
       data:{arr, message}
@@ -191,9 +184,6 @@ io.on('connection', socket => {
         },
       }
     );
-    console.log(profilePost)
-
-   
   });
 
 
@@ -206,24 +196,15 @@ io.on('connection', socket => {
     const { secure_url } = await cloudinary.uploader.upload(imageContent);
     arr.push({ type: data.type, data: secure_url, userid });
 
-    //   const {
-    //     DOB,
-    //     address,
-    //     gender
-    // } = data.body
-
     const Profile = await User.findOneAndUpdate(
       { _id: userid },
       { coverImg: secure_url },{new:true},(err, Profile) => {
         if (err) {
-            console.log("Something wrong when updating data!");
+            return console.log("Something wrong when updating data!");
         }
-       
-   
-        io.sockets.emit("coverdone", {Profile});
+        io.sockets.emit("coverdone", {userid});
     }
     );
-    console.log(Profile);
     const newpost = await Post.create({
       from: userid,
       data:{arr, message}
@@ -252,19 +233,12 @@ io.on('connection', socket => {
       relationship:data.relationship,
       education:data.education,
       language:data.language
-
-
     },{new:true},(err, doc) => {
       if (err) {
-          console.log("Something wrong when updating data!");
+          return console.log("Something wrong when updating data!");
       }
-      socket.emit("updatebio", doc)
-      console.log();
-  })
-    console.log(newBio) 
-    
-     
-
+      socket.emit("updatebio", {userid})
+    })
   })
 
 
