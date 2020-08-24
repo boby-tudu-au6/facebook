@@ -19,7 +19,12 @@ const userSchema = new Schema({
   lastLogin:{ type: Date, default: Date.now },
   place:String,
   curChat:{type:Object},
-  post:[{ type: Schema.Types.ObjectId, ref: "post" }]
+  post:[{ type: Schema.Types.ObjectId, ref: "post" }],
+  city:String,
+  bio:String,
+  relationship:String,
+  education:String,
+  language:String
 })
 
 const User = mongoose.model('user',userSchema)
