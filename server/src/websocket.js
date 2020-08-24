@@ -171,7 +171,11 @@ io.on('connection', socket => {
 
     const Profile = await User.findOneAndUpdate(
       { _id: userid },
-      { profilePic: secure_url }
+      { profilePic: secure_url },
+      {new:true},
+      (err,Profile)=>{
+        io.sockets.emit("profiledone", {Profile});
+      }
     );
     console.log(Profile);
     const newpost = await Post.create({
@@ -189,7 +193,7 @@ io.on('connection', socket => {
     );
     console.log(profilePost)
 
-    io.sockets.emit("profiledone", {profilePost,Profile});
+   
   });
 
 
@@ -210,7 +214,14 @@ io.on('connection', socket => {
 
     const Profile = await User.findOneAndUpdate(
       { _id: userid },
-      { coverImg: secure_url }
+      { coverImg: secure_url },{new:true},(err, Profile) => {
+        if (err) {
+            console.log("Something wrong when updating data!");
+        }
+       
+   
+        io.sockets.emit("coverdone", {Profile});
+    }
     );
     console.log(Profile);
     const newpost = await Post.create({
@@ -228,7 +239,7 @@ io.on('connection', socket => {
     );
     console.log(profilePost)
 
-    io.sockets.emit("coverdone", {profilePost,Profile});
+    
   });
   socket.on('updateBio',async ({data,userid})=>{
     console.log('function fired')
@@ -243,8 +254,15 @@ io.on('connection', socket => {
       language:data.language
 
 
-    })
-    socket.emit("updatebio", newBio)
+    },{new:true},(err, doc) => {
+      if (err) {
+          console.log("Something wrong when updating data!");
+      }
+      socket.emit("updatebio", doc)
+      console.log();
+  })
+    console.log(newBio) 
+    
      
 
   })
