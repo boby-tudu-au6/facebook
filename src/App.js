@@ -7,11 +7,11 @@ import Chat from './comp/friend/Chat';
 import Login from './comp/login/Login';
 import { connect } from 'react-redux';
 import {checkLogin} from './redux/action/action'
+import Videoapp from './comp/video/Video'
 import Profile from './comp/Profile/Profile'
+import Post from './comp/post/Post'
+// import  Group  from './comp/group/Group';
 import '../node_modules/antd/dist/antd.css'
-
-
-
 function App(props) {
   checkLogin()
   return (
@@ -19,8 +19,10 @@ function App(props) {
     <div className='true' style={{minWidth:"600px"}}>
       {props.username!==null?<Nav/>:<Login/>}
       <Switch>
-        <Route exact path='/' component={Home}/>
+      <Route exact path='/' component={Home}/>
         <Route exact path='/messages' component={Chat}/>
+        <Route exact path='/tes1' component={Post}/>
+        {/* <Route exact path='/test' component={Group}/> */}
         <Route exact path='/profile' component={Profile}/>
       </Switch>
     </div>

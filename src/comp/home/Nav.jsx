@@ -6,7 +6,7 @@ import {DebounceInput} from 'react-debounce-input';
 import Badge from './Badge'
 import {websocket} from './websockets'
 import withState from '../hoc/withState'
-
+import { Icon } from 'semantic-ui-react'
 class Nav extends Component {
     constructor(props) {
         super(props)
@@ -21,6 +21,10 @@ class Nav extends Component {
     }
     
     async componentDidMount(){
+        this.state.socket.on("updatebio",data=>{console.log(data);   })
+        this.state.socket.on("profiledone",data=>{console.log(data);  localStorage.setItem('profileImage',data.Profile.profilePic)  })
+        this.state.socket.on("coverdone",data=>{console.log(data);  localStorage.setItem('coverImg',data.Profile.coverImg)  })
+        
         this.props.getPost({userid:this.props.userid,page:this.props.pageid})
         this.state.socket.on("profiledone",data=>{
             console.log(data)
@@ -155,7 +159,7 @@ class Nav extends Component {
     <ul className="navbar-nav col-6 ml-2">
         <Link to='/profile' className="nav-item col-3 p-0 d-flex" title='profile' data-toggle="tooltip">
             <div className="col-4 p-1">
-                <img src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="" className="rounded-circle p-0" style={{width:"35px",height:"35px"}}/>
+                <img src={localStorage.getItem('profileImage')} alt="" className="rounded-circle p-0" style={{width:"35px",height:"35px"}}/>
             </div>
             <div className="col-10 p-0">
         <p className="nav-link text-light" href="/g">{ this.props.username }</p>
@@ -164,14 +168,16 @@ class Nav extends Component {
         <li className="nav-item p-1 rounded navitem text-center" title='friend request' data-toggle="tooltip">
             {this.props.friendRequest.length===0?null:<Badge data={this.props.friendRequest.length}/>}
             <Link to='/friends' className="nav-link active">
-                <i className="fas fa-user-friends icon"></i>
+                {/* <i className="fas fa-user-friends icon"></i> */}
+                <Icon  name='users' />
             </Link>
         </li>
         <li className="nav-item p-1 rounded navitem text-center" title='messages' data-toggle="tooltip">
         {chats.length===0?null:<Badge data={chats.length}/>}
         
             <Link to='/messages' className="nav-link active">
-                <i className="fab fa-facebook-messenger icon"></i>
+                {/* <i className="fab fa-facebook-messenger icon"></i> */}
+                <Icon  name='facebook messenger' />
             </Link>
         </li>
         <li className="nav-item p-1 rounded navitem text-center justify-content-center" title='notification' data-toggle="tooltip">

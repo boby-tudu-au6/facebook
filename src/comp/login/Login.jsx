@@ -20,6 +20,7 @@ class Login extends Component {
         }
     }
     componentDidMount(){
+        document.title = "Login|Apne"
         this.props.checkLogin()
     }
     handleLogin = async (e) =>{
