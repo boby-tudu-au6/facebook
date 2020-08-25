@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost, incUnseenPost, delUnseenPost, setFile, setFileSrc, delFiles, delFileItem,setPageId, disSetChat,getProfile, delProfile } from '../../redux/action/action'
+import { getFriend, setChat, logout, searchFriend, setSocket, getRequest, updateRequest, sendRequest, setOnlineChat, delChatId, checkLogin, startVideo,getPost, incUnseenPost, delUnseenPost, setFile, setFileSrc, delFiles, delFileItem,setPageId, disSetChat,getProfile, delProfile, closeMedia } from '../../redux/action/action'
 
 function withState(Component) {
     const mapStateToProps = state =>{return {...state}}
@@ -28,7 +28,8 @@ function withState(Component) {
             delUnseenPost:()=>dispatch(delUnseenPost()),
             delFiles:()=>dispatch(delFiles()),
             delProfile:()=>dispatch(delProfile()),
-            disSetChat:()=>dispatch(disSetChat())
+            disSetChat:()=>dispatch(disSetChat()),
+            closeMedia:()=>dispatch(closeMedia())
         }
     }
     return connect(mapStateToProps,mapDispatchToProps)(
@@ -80,6 +81,7 @@ function withState(Component) {
                     userdata={this.props.userdata}
                     profilePic={this.props.profilePic}
                     coverImg={this.props.coverImg}
+                    closeMedia={this.props.closeMedia}
                 />)
             }
         }

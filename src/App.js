@@ -7,7 +7,6 @@ import Chat from './comp/friend/Chat';
 import Login from './comp/login/Login';
 import { connect } from 'react-redux';
 import {checkLogin} from './redux/action/action'
-import Videoapp from './comp/video/Video'
 import Profile from './comp/Profile/Profile'
 import Post from './comp/post/Post'
 

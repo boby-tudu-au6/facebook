@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Axios from 'axios'
 import './post.css'
 import {DropzoneDialog} from 'material-ui-dropzone'
 import Button from '@material-ui/core/Button';

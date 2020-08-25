@@ -135,6 +135,9 @@ io.on('connection', socket => {
       socket.on("audio_acceptCall", (data) => {
           io.to(data.to).emit('audio_callAccepted', data.signal);
       })
+      socket.on("endaudio",data=>{
+        socket.emit("audioended",{data})
+      })
     })
     socket.on('chat', async data => { 
       let date = new Date()

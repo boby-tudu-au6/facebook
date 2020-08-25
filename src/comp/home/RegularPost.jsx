@@ -14,7 +14,6 @@ export default class RegularPost extends Component {
         likes:0,
         comments:0,
         isOpened:false,
-        firstname:'',
         lastname:''
       }
     }

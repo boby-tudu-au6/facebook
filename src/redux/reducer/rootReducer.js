@@ -1,4 +1,4 @@
-import { DO_LOGIN, CHECK_LOGIN, LOGOUT, SEARCH_FRIEND, SET_SOCKET, GET_REQUEST, UPDATE_REQUEST,baseurl, GET_FRIEND, SEND_REQUEST, SET_CHAT, SET_ONLINE_CHAT, DEL_CHAT_ID, START_VIDEO, GET_POST, INC_UNSEEN_POST, DEL_UNSEEN_POST, SET_FILE, SET_FILESRC, DEL_FILES, DEL_FILE_ITEM, SET_PAGEID, DIS_SET_CHAT, START_AUDIO, GET_PROFILE, DEL_PROFILE } from "../action/action";
+import { DO_LOGIN, CHECK_LOGIN, LOGOUT, SEARCH_FRIEND, SET_SOCKET, GET_REQUEST, UPDATE_REQUEST,GET_FRIEND, SEND_REQUEST, SET_CHAT, SET_ONLINE_CHAT, DEL_CHAT_ID, START_VIDEO, GET_POST, INC_UNSEEN_POST, DEL_UNSEEN_POST, SET_FILE, SET_FILESRC, DEL_FILES, DEL_FILE_ITEM, SET_PAGEID, DIS_SET_CHAT, START_AUDIO, GET_PROFILE, DEL_PROFILE, CLOSE_MEDIA } from "../action/action";
 
 const initState = {
     profilePic:null,
@@ -52,6 +52,7 @@ function rootReducer(state=initState,action){
         case DEL_UNSEEN_POST:return {...state,unseenpost:0}
         case SET_FILE:return {...state,file:[...state.file,payload]}
         case SET_FILESRC:return {...state,filesrc:[...state.filesrc,payload]}
+        case CLOSE_MEDIA:return {...state,audio:null,video:null}
         case DEL_FILES:return {...state,file:[],filesrc:[]}
         case SET_PAGEID:return {...state,pageid:payload}
         case GET_PROFILE:return {...state,userdata:payload}

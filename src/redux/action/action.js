@@ -27,6 +27,7 @@ export const DEL_FILES = 'DEL_FILES'
 export const DEL_FILE_ITEM = 'DEL_FILE_ITEM'
 export const DEL_PROFILE = 'DEL_PROFILE'
 export const DIS_SET_CHAT = 'DIS_SET_CHAT'
+export const CLOSE_MEDIA = 'CLOSE_MEDIA'
 
 
 
@@ -35,6 +36,11 @@ export const baseurl = "http://localhost:8080"
 
 export const getProfile = payload =>async dispatch=>{
     const {data} = await Axios.post(`${baseurl}/getprofile`,{userid:payload})
+    // Axios({
+    //     url:"",
+    //     headers:{token},
+    //     data:data
+    // })
     return dispatch({
         type:GET_PROFILE,
         payload:data
@@ -67,7 +73,14 @@ export const checkLogin =()=>async dispatch=>{
     try{
         const user = localStorage.getItem('user')
         if(user){
-            const {data} = await Axios.post(`${baseurl}/checklogin`,{user})
+            const {data} = await Axios.post(`${baseurl}/checklogin`,
+            {user},
+            {
+                headers:{
+                    token:localStorage.getItem("user"),
+                    'Content-Type': 'application/json'
+                }
+            })
             const username = data[0].firstname
             const userid = data[0]._id
             const profilePic = data[0].profilePic
@@ -81,16 +94,25 @@ export const checkLogin =()=>async dispatch=>{
     }
 }
 export const setChat = payload => async dispatch =>{
-    const {data} = await Axios.post(`${baseurl}/getchat`,{
-        userid:payload.userid,
-        friendid:payload.friendid,
-        curChat:payload
-    })
-    return dispatch({
-        type:SET_CHAT,
-        payload,
-        data
-    })
+    try{
+        const {data} = await Axios.post(`${baseurl}/getchat`,{
+            userid:payload.userid,
+            friendid:payload.friendid,
+            curChat:payload
+        },{
+            headers:{
+                token:localStorage.getItem("user"),
+                'Content-Type': 'application/json'
+            }
+        })
+        return dispatch({
+            type:SET_CHAT,
+            payload,
+            data
+        })
+    }catch(err){
+        console.log('invalid token')
+    }
 }
 export const setOnlineChat = payload =>dispatch =>{
     return dispatch({
@@ -104,17 +126,26 @@ export const logout = ()=>dispatch=>{
 }
 
 export const searchFriend = (payload) =>async dispatch=>{
-    if(payload!==""){
-        const {data} = await Axios.post(`${baseurl}/search`,{q:payload})
-        return dispatch({
-            type:SEARCH_FRIEND,
-            payload:data.user
-        })
-    }else{
-        return dispatch({
-            type:SEARCH_FRIEND,
-            payload:null
-        })
+    try{
+        if(payload!==""){
+            const {data} = await Axios.post(`${baseurl}/search`,{q:payload},{
+                headers:{
+                    token:localStorage.getItem("user"),
+                    'Content-Type': 'application/json'
+                }
+            })
+            return dispatch({
+                type:SEARCH_FRIEND,
+                payload:data.user
+            })
+        }else{
+            return dispatch({
+                type:SEARCH_FRIEND,
+                payload:null
+            })
+        }
+    }catch(err){
+        console.log('invalid token')
     }
 }
 export const setSocket = payload => dispatch =>{
@@ -124,25 +155,38 @@ export const setSocket = payload => dispatch =>{
     })
 }
 export const getRequest = payload =>async dispatch =>{
-    const {data} = await Axios.post(`${baseurl}/getrequest`,{_id:payload})
-    return dispatch({
-        type:GET_REQUEST,
-        payload:data
-    })
+    try{
+        const {data} = await Axios.post(`${baseurl}/getrequest`,{_id:payload},{
+            headers:{
+                token:localStorage.getItem("user"),
+                'Content-Type': 'application/json'
+            }
+        })
+        return dispatch({
+            type:GET_REQUEST,
+            payload:data
+        })
+    }catch(err){
+        console.log("invalid token")
+    }
 }
-export const updateRequest = payload => async dispatch =>{
+export const updateRequest = payload => dispatch =>{
     return dispatch({
         type:UPDATE_REQUEST,
         payload
     })
 }
 export const getFriend = userid =>async dispatch =>{
-    const {data} = await Axios.post(`${baseurl}/getfriend`,{_id:userid})
-    if(data!==null){
-        return dispatch({
-            type:GET_FRIEND,
-            payload:data
-        })
+    try{
+        const {data} = await Axios.post(`${baseurl}/getfriend`,{_id:userid})
+        if(data!==null){
+            return dispatch({
+                type:GET_FRIEND,
+                payload:data
+            })
+        }
+    }catch(err){
+        console.log("invalid token")
     }
 }
 export const sendRequest = ()=>dispatch=>{
@@ -151,8 +195,12 @@ export const sendRequest = ()=>dispatch=>{
     })
 }
 export const delChatId = (payload)=>async dispatch=>{
-    await Axios.post(`${baseurl}/delchat`,{userid:payload})
-    return dispatch({type:DEL_CHAT_ID})
+    try{
+        await Axios.post(`${baseurl}/delchat`,{userid:payload})
+        return dispatch({type:DEL_CHAT_ID})
+    }catch(err){
+        console.log("invalid token")
+    }
 }
 
 export const startVideo = () => dispatch=>{
@@ -162,11 +210,15 @@ export const startAudio = () =>dispatch=>{
     return dispatch({type:START_AUDIO})
 }
 export const getPost = ({userid,page}) => async dispatch =>{
-    const {data} = await Axios.post(`${baseurl}/getpost`,{userid,page})
-    return dispatch({
-        type:GET_POST,
-        payload:data
-    })
+    try{
+        const {data} = await Axios.post(`${baseurl}/getpost`,{userid,page})
+        return dispatch({
+            type:GET_POST,
+            payload:data
+        })
+    }catch(err){
+        console.log('invalid token')
+    }
 }
 export const incUnseenPost = () =>dispatch=>{
     return dispatch({type:INC_UNSEEN_POST})
@@ -191,4 +243,7 @@ export const setPageId = payload=>dispatch=>{
 }
 export const disSetChat = () =>dispatch=>{
     return dispatch({type:DIS_SET_CHAT})
+}
+export const closeMedia = ()=>dispatch=>{
+    return dispatch({type:CLOSE_MEDIA})
 }

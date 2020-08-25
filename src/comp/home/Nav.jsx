@@ -7,6 +7,7 @@ import Badge from './Badge'
 import {websocket} from './websockets'
 import withState from '../hoc/withState'
 import { Icon } from 'semantic-ui-react'
+import Axios from 'axios'
 class Nav extends Component {
     constructor(props) {
         super(props)
@@ -21,6 +22,14 @@ class Nav extends Component {
     }
     
     async componentDidMount(){
+        Axios.post(`${baseurl}/test`,
+            {firstname:"boby",lastname:'tudu' },
+            {
+                headers:{
+                token:"secret token",
+                'Content-Type': 'application/json'}
+            }
+            )
         if(this.props.location.pathname==='/'){
             this.props.getPost({userid:this.props.userid,page:this.props.pageid})
         }

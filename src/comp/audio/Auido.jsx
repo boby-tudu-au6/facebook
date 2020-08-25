@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect,  useRef } from 'react';
 import {connect} from 'react-redux';
 import Peer from "simple-peer";
 import styled from "styled-components";
-import {delChatId} from '../../redux/action/action'
+import {delChatId,closeMedia} from '../../redux/action/action'
 import { useStateIfMounted } from "use-state-if-mounted";
 
 const Container = styled.div`
@@ -54,7 +54,7 @@ function Audioapp(props){
           socket.current.on("audio_allUsers", ({users}) => {
             setUsers(users);
           })
-          socket.current.on("audio_useroffline",({userid})=>{
+          socket.current.on("useroffline",({userid})=>{
             // alert('user offline')
             setCallAccepted(false)
             setCaller("")
@@ -67,14 +67,18 @@ function Audioapp(props){
             setCaller(data.from);
             setCallerSignal(data.signal);
           })
-          // console.log(props.curChat)
+          
           if(props.curChat.socketid!==''){
             setSocket(props.curChat.socketid)
           }
     }
   }, [props.socket,users,props.curChat]);
 
-  
+  const peer = new Peer({
+    initiator: false,
+    trickle: false,
+    stream: stream,
+  });
   function callPeer(id) {
     const peer = new Peer({
       initiator: true,
@@ -111,24 +115,28 @@ function Audioapp(props){
       setCallAccepted(true);
       peer.signal(signal);
     })
-    // socket.current.on("imonline",()=>setSocket(props.curChat))
 
   }
 
   function acceptCall() {
     setCallAccepted(true);
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: stream,
-    });
+    // const peer = new Peer({
+    //   initiator: false,
+    //   trickle: false,
+    //   stream: stream,
+    // });
     peer.on("signal", data => {
-      socket.current.emit("acceptCall", { signal: data, to: caller })
+      socket.current.emit("audio_acceptCall", { signal: data, to: caller })
     })
 
     peer.on("stream", stream => {
       partnerVideo.current.srcObject = stream;
     });
+
+    peer.on("close",()=>{
+      props.delChatId()
+      setCallAccepted(false)
+    })
 
     peer.signal(callerSignal);
   }
@@ -137,7 +145,7 @@ function Audioapp(props){
   if (stream) {
     UserVideo = (
       <div>
-        <Video className='localVideo col-3' playsInline muted ref={userVideo} autoPlay />
+        <Video className='col-3' playsInline muted ref={userVideo} autoPlay />
       </div> 
     );
   }
@@ -147,12 +155,6 @@ function Audioapp(props){
   if (receivingCall===true && callAccepted===false) {
     btnclass = `${btnclass} box bounce-1`
     onclickfunc = acceptCall
-    // incomingCall = (
-    //   <div className='box bounce-1'>
-    //     <h1>{caller} is calling you</h1>
-    //     <button onClick={acceptCall}>Accept</button>
-    //   </div>
-    // )
   }
   let PartnerVideo=<div style={{
       position:"absolute",
@@ -178,8 +180,10 @@ function Audioapp(props){
         <div className='controls row col-12 justify-content-center m-auto'>
           <button className='btn btn-danger rounded-circle m-auto'
           onClick={()=>{
-            if(props.curChat!==null){props.socket.emit("leaveroom",{room:props.curChat.room})}
+            props.socket.emit("leaveroom",{room:props.curChat.room})
             props.delChatId(props.userid)
+            // props.socket.emit("endaudio",{room:props.curChat.room})
+            peer.destroy()
             }}>
             <i className="fas fa-phone-slash"></i>
           </button>
@@ -192,6 +196,18 @@ function Audioapp(props){
   return (
     <Container>
       <Row>
+      <button 
+        className='btn btn-danger'
+        style={{
+          position:"absolute",
+          right:"10px",
+          top:'0px',
+          padding:'10px',
+          paddingRight:"15px",
+          paddingLeft:"15px",
+          borderRadius:"7px"
+        }}
+        onClick={props.closeMedia}>X</button>
         {UserVideo}
         {PartnerVideo}
       </Row>
@@ -216,7 +232,8 @@ function Audioapp(props){
 const mapStateToProps = state=>{return {...state}}
 const mapDispatchToProps = dispatch =>{
   return {
-    delChatId:payload=>dispatch(delChatId(payload))
+    delChatId:payload=>dispatch(delChatId(payload)),
+    closeMedia:()=>dispatch(closeMedia())
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Audioapp)

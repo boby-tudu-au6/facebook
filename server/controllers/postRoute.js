@@ -196,6 +196,19 @@ module.exports = {
     const post = await Post.find({_id:{$in:arr}})
     .select("data")
     res.status(200).json({post})
+  },
+  test:async(req,res)=>{
+    // const {token} = req.headers
+    try{
+      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJmcmllbmQiOlt7InJvb20iOiJhMzUwOGM3Mi0yZDk1LTRhN2MtOTcxYi1hN2EwZmRmYjE2MmUiLCJmcmllbmRJZCI6IjVmMmQzYTEzNDAyYWU4MGU4YzQ2YzIyMSJ9LHsicm9vbSI6ImE3ZmY5MTY3LWFmN2EtNDcwOS1hOWY4LWE4YWFmOWI0ZDMyMSIsImZyaWVuZElkIjoiNWYyZDM4NTY0MDJhZTgwZThjNDZjMjFkIn1dLCJmcmllbmRSZXF1ZXN0IjpbXSwibm90aWZpY2F0aW9uIjpbXSwic29ja2V0aWQiOiIiLCJwcm9maWxlUGljIjoiaHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vZHE4aWptbGJmL2ltYWdlL3VwbG9hZC92MTU5ODE5ODMyNy9icWZqbWhvN240dnU3Z2hqOHhkdS5qcGciLCJjb3ZlckltZyI6Imh0dHBzOi8vcmVzLmNsb3VkaW5hcnkuY29tL2RxOGlqbWxiZi9pbWFnZS91cGxvYWQvdjE1OTgyNzgzNTUvZzJ1dHg1dnRqdHd4Y21nMG12bXQuanBnIiwicG9zdCI6WyI1ZjQyMzJlMWRhMDk1NDFiZGMwYjUzZTgiLCI1ZjQyODljNzY5M2ExNDI5MTQxZjY0MmUiLCI1ZjQyOTIzODQyMmUxMTI1MDQwN2ZmMzQiLCI1ZjQzMThjMmI3ODRmZDFkNzBiYzVhOWIiLCI1ZjQzNDhkN2RiMzRiYzMzZjAwMWI5M2UiLCI1ZjQzY2FkNGE5ZjUxNDMxOTQwNzg2MmMiXSwiX2lkIjoiNWYyZDM3ZDU0MDJhZTgwZThjNDZjMjFjIiwiZmlyc3RuYW1lIjoiQm9ieSIsImxhc3RuYW1lIjoiVHVkdSIsImJpcnRoZGF5IjoiMjAyMC0wOC0wNyIsImdlbmRlciI6Im1hbGUiLCJlbWFpbCI6ImpzOTAzNzgzQGdtYWlsLmNvbSIsInBob25lIjoiIiwicGFzc3dvcmQiOiIkMmIkMTAkWTdxVHRmQlUxbjBrb0toSy5kTFRydUJWQi9vSzdJNjBuNFlrNFFlMnFwLzROd0VibUVPbksiLCJsYXN0TG9naW4iOiIyMDIwLTA4LTA3VDExOjE1OjMzLjUwMFoiLCJfX3YiOjAsImN1ckNoYXQiOnsiZnJpZW5kaWQiOiI1ZjJkM2ExMzQwMmFlODBlOGM0NmMyMjEiLCJmcmllbmRGaXJzdE5hbWUiOiJyYWpqdSIsImZyaWVuZExhc3ROYW1lIjoia3VtYXIiLCJzb2NrZXRpZCI6Il9zZkRFMHJDaFZORFFOZGJBQUFQIiwicm9vbSI6ImEzNTA4YzcyLTJkOTUtNGE3Yy05NzFiLWE3YTBmZGZiMTYyZSIsInVzZXJpZCI6IjVmMmQzN2Q1NDAyYWU4MGU4YzQ2YzIxYyJ9LCJ0b2tlbiI6IjEzMmFlM2Y1LThiM2EtNGI2ZC1iYTI0LTRhMTFmYTVlNmNiZSIsImJpbyI6Ik5BamhqZ2hmIiwiY2l0eSI6Ik11bWJhaSIsImVkdWNhdGlvbiI6IkdyYWR1YXRpb24iLCJsYW5ndWFnZSI6Ik1hcmF0aGkiLCJyZWxhdGlvbnNoaXAiOiJJbiBhIFJlbGF0aW9uc2hpcCJ9XSwiaWF0IjoxNTk4MzIxNzgwLCJleHAiOjE1OTgzMjUzODB9.wHEkDxT7-XDwYPIalTJff6u4KgM4Ay2zuvWmDWG4mTs'
+      const data = jwt.verify(token,'secret')
+      const data2 = await User.findOne({_id:data.user[0]._id})
+      if(data.user[0].token===data2.token){
+        return res.status(200).json(data.user)
+      }
+    }catch(err){
+      return res.status(401).json({message:"invalid token"})
+    }
   }
 
 

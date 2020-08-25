@@ -124,8 +124,8 @@ border-radius: 100px
 }
 @keyframes bounce-1 {
   0%   { transform: translateY(0); }
-  25%  { transform: translateY(-100px); }
+  25%  { transform: translateY(-50px); }
   50% { transform: translateY(0); }
-  75% { transform: translateY(-100px); }
+  75% { transform: translateY(-50px); }
   100% { transform: translateY(0); }
 }

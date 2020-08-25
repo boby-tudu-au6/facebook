@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
  import ButtonA  from "antd/lib/button/button";
-import PhotoIcon from "@material-ui/icons/Photo";
-import { makeStyles } from "@material-ui/core/styles";
-import {Redirect, withRouter} from 'react-router-dom'
+// import PhotoIcon from "@material-ui/icons/Photo";
+// import { makeStyles } from "@material-ui/core/styles";
+import {withRouter} from 'react-router-dom'
 import Fab from "@material-ui/core/Fab";
 import Modal from "react-modal";
 import EditIcon from "@material-ui/icons/Edit";
@@ -14,10 +14,10 @@ import SecondColumn from '../home/SecondColumn'
 import {baseurl} from '../../redux/action/action'
 import {
   Segment,
-  Header,
+  // Header,
   Icon,
-  Statistic,
-  Label,
+  // Statistic,
+  // Label,
   TextArea,
   Form,
   Dropdown,
@@ -25,7 +25,6 @@ import {
 
 } from "semantic-ui-react";
 import "./style.css";
-import { getPost } from "../../redux/action/action";
 import Axios from "axios";
 const { State, Relationship, Language, Education } = require("./data");
 const Dp =
@@ -228,7 +227,7 @@ class Profile extends PureComponent {
                       }}
                       src={this.state.profilePic}
                       class=" mt-5  rounded-circle"
-                      alt="image"
+                      alt="somthingBeautiful"
                     />
                     {/* https://www.w3schools.com/bootstrap4/img_avatar3.png */}
                     <Fab
@@ -384,7 +383,6 @@ class Profile extends PureComponent {
                 {this.state.postImg!==null?this.state.postImg.map(item=>
                 <img class="col-6" src={item} alt="dp2" />):null}
               </div>
-              
             </div>
 
             <div className='col-7 p-0 text-left'>

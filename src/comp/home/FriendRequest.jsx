@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import withState from '../hoc/withState'
 import {connect} from 'react-redux'
 
 class FriendRequest extends Component {

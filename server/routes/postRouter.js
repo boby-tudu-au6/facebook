@@ -14,5 +14,6 @@ router.post("/createGroup",post.createGroup)
 router.post("/getprofile",post.getProfile)
 router.post("/getname",post.getName)
 router.post("/getpostimg",post.getPostImg)
+router.post("/test",post.test)
    
 module.exports = router; 

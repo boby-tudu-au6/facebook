@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {connect} from 'react-redux';
 import Peer from "simple-peer";
 import styled from "styled-components";
-import {delChatId} from '../../redux/action/action'
+import {delChatId,closeMedia} from '../../redux/action/action'
 import { useStateIfMounted } from "use-state-if-mounted";
 
 const Container = styled.div`
@@ -82,7 +82,6 @@ function Videoapp(props){
             setCaller(data.from);
             setCallerSignal(data.signal);
           })
-          // console.log(props.curChat)
           if(props.curChat.socketid!==''){
             setSocket(props.curChat.socketid)
           }else{
@@ -203,6 +202,18 @@ function Videoapp(props){
   return (
     <Container>
       <Row>
+        <button 
+        className='btn btn-danger'
+        style={{
+          position:"absolute",
+          right:"10px",
+          top:'0px',
+          padding:'10px',
+          paddingRight:"15px",
+          paddingLeft:"15px",
+          borderRadius:"7px"
+        }}
+        onClick={props.closeMedia}>X</button>
         {UserVideo}
         {PartnerVideo}
       </Row>
@@ -227,7 +238,8 @@ function Videoapp(props){
 const mapStateToProps = state=>{return {...state}}
 const mapDispatchToProps = dispatch =>{
   return {
-    delChatId:payload=>dispatch(delChatId(payload))
+    delChatId:payload=>dispatch(delChatId(payload)),
+    closeMedia:()=>dispatch(closeMedia())
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Videoapp)
