@@ -87,23 +87,20 @@ module.exports = {
     }
   },
 
-  // send message route
-  sendMessage: async (req, res) => {
-    const { data } = req.body;
-    await User.findByIdAndUpdate(
-      { _id: data },
-      { $push: { friendRequest: data } }
-    );
-  },
+  
   search:async(req,res)=>{
     const {q} = req.body
-    const user = await User.find({
-      $or:[
-        {'firstname':{$regex:q,$options:"i"}}, 
-        {'lastname':{$regex:q,$options:"i"}}
-      ]
-    }).limit(6)
-    return res.status(200).json({user})
+    try{
+      const user = await User.find({
+        $or:[
+          {'firstname':{$regex:q,$options:"i"}}, 
+          {'lastname':{$regex:q,$options:"i"}}
+        ]
+      }).limit(6)
+      return res.status(200).json({user})
+    }catch(err){
+      return res.status(500).json({message:"server error"})
+    }
   },
   getRequest:async (req,res)=>{
     const {_id} = req.body
@@ -124,7 +121,6 @@ module.exports = {
     const chats1 = await Message.find({to:userid,from:friendid})
     const chats2 = await Message.find({to:friendid,from:userid})
     const chats = chats1.concat(chats2)
-
     return res.status(200).json(chats)
   },
   delChat:async(req,res)=>{
@@ -140,7 +136,7 @@ module.exports = {
         return res.status(200).json(data.user)
       }
     }catch(err){
-      return res.status(401).json({message:"invalid token"})
+      return res.status(200).json({message:"invalid token"})
     }
   },
   

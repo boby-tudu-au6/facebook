@@ -27,8 +27,8 @@ import {
 import "./style.css";
 import Axios from "axios";
 const { State, Relationship, Language, Education } = require("./data");
-const Dp =
-  "https://scontent.fpat3-1.fna.fbcdn.net/v/t1.0-1/p160x160/116347584_125646719220795_8469568938332917903_o.jpg?_nc_cat=111&_nc_sid=dbb9e7&_nc_ohc=Obur3lZkUlYAX-qkk2a&_nc_ht=scontent.fpat3-1.fna&_nc_tp=6&oh=5656be8ac8a107a378b3fda25111a89e&oe=5F567CB8";
+// const Dp =
+//   "https://scontent.fpat3-1.fna.fbcdn.net/v/t1.0-1/p160x160/116347584_125646719220795_8469568938332917903_o.jpg?_nc_cat=111&_nc_sid=dbb9e7&_nc_ohc=Obur3lZkUlYAX-qkk2a&_nc_ht=scontent.fpat3-1.fna&_nc_tp=6&oh=5656be8ac8a107a378b3fda25111a89e&oe=5F567CB8";
 class Profile extends PureComponent {
   constructor(props) {
     super(props);
@@ -119,7 +119,7 @@ class Profile extends PureComponent {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { message } = e.target;
+    // const { message } = e.target;
     this.props.socket.emit("uploadProfile", {
       data: this.state.file,
       userid: this.props.userid,
@@ -131,7 +131,7 @@ class Profile extends PureComponent {
   };
   handleSubmit1 = (e) => {
     e.preventDefault();
-    const { message } = e.target;
+    // const { message } = e.target;
     this.props.socket.emit("uploadCover", {
       data: this.state.cover,
       userid: this.props.userid,
@@ -165,28 +165,24 @@ class Profile extends PureComponent {
   handleFileUpload = (e) => {
     alert("file upload done");
   };
-  render() {
-    // let {language,bio,city,status,education} =this.state
-
-  //  if(localStorage.getItem('bio') !== null){
-  //   let Profile = localStorage.getItem('bio') 
-  //   var {language,bio,city,relationship,education} = Profile 
-  //  }  
+  render() { 
   if(this.props.userdata !== null){
-    var {language,bio,city,relationship,education,profilePic,coverImg} = this.props.userdata
+    var {language,bio,city,relationship,education
+      ,profilePic,coverImg
+    } = this.props.userdata
    } 
     return (
       <>
-        <div class="container row col-12 m-auto pt-0">
+        <div className="container row col-12 m-auto pt-0">
           {/* 
 <!-- first column --> */}
-          <div class="col-9 row m-auto">
-            <div style={{ height: "30vh" }} class="row col-12">
+          <div className="col-9 row m-auto">
+            <div style={{ height: "30vh" }} className="row col-12">
               <div
-                class="col-12"
+                className="col-12"
                 style={{
                   height: "80%",
-                  backgroundImage: `url(${this.state.coverImg})`,
+                  backgroundImage: `url(${coverImg})`,
                   backgroundRepeat: 'no-repeat',
                   backgroundSize:"cover",
                   backgroundPosition:"center"
@@ -225,8 +221,8 @@ class Profile extends PureComponent {
                         height: "10rem",
                         width: "10rem",
                       }}
-                      src={this.state.profilePic}
-                      class=" mt-5  rounded-circle"
+                      src={profilePic}
+                      className=" mt-5  rounded-circle"
                       alt="somthingBeautiful"
                     />
                     {/* https://www.w3schools.com/bootstrap4/img_avatar3.png */}
@@ -248,7 +244,7 @@ class Profile extends PureComponent {
                 </div>
               </div>
               <div
-                class="col-12 mt-3 "
+                className="col-12 mt-3 "
                 style={{
                   color: "blue",
                   marginLeft: "15rem",
@@ -264,13 +260,13 @@ class Profile extends PureComponent {
                 <Button style={{ color: "blue" }}> Archieves</Button>
                 <Button style={{ color: "blue" }}>More...</Button>
               </div>
-              <hr class="col-12 pl-0 " style={{ marginTop: "-0.1rem" }} />
+              <hr className="col-12 pl-0 " style={{ marginTop: "-0.1rem" }} />
             </div>
             <div 
             className='row m-auto col-12 text-center p-0 pt-5 justify-content-center' style={{marginTop:"30px"}}>
-            <div class="col-5 full ">
+            <div className="col-5 full ">
             <div
-                class="col-12 bg-light mb-2 rounded hid"
+                className="col-12 bg-light mb-2 rounded hid"
                 style={{ height: "auto" }}
               >
                 {this.props.userdata!==null?
@@ -287,7 +283,6 @@ class Profile extends PureComponent {
                     {" "}
                     <div>
                       <div className="mb-4">
-                        {/* this is city data from database */}
                       <p>{city}</p>
                         <Dropdown
                           style={{
@@ -301,8 +296,8 @@ class Profile extends PureComponent {
                           onChange={this.handleState}
                         />
                       </div>
-                      <p className="mb-4">
-                      {relationship}
+                      <div className="mb-4">
+                      <p>{relationship}</p>
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -314,9 +309,9 @@ class Profile extends PureComponent {
                           selection
                           options={Relationship}
                         />
-                      </p>
-                      <p className="mb-4">
-                      {education}
+                      </div>
+                      <div className="mb-4">
+                      <p>{education}</p>
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -329,9 +324,9 @@ class Profile extends PureComponent {
                           onChange={this.handleEducation}
 
                         />
-                      </p>
-                      <p className="mb-4">
-                      {language}
+                      </div>
+                      <div className="mb-4">
+                      <p>{language}</p>
                         <Dropdown
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -343,9 +338,9 @@ class Profile extends PureComponent {
                           options={Language}
                           onChange={this.handleLanguage}
                         />
-                      </p>
-                      <p className="mb-4">
-                      {bio}
+                      </div>
+                      <div className="mb-4">
+                      <p>{bio}</p>
                         <TextArea
                           style={{
                             display: this.state.show ? "block" : "none",
@@ -356,7 +351,7 @@ class Profile extends PureComponent {
                           value={this.state.bio}
                           name="name"
                         />
-                      </p>
+                      </div>
                       <Button
                 inverted
                 color="green"
@@ -377,11 +372,11 @@ class Profile extends PureComponent {
                 </div>
               </div>
               <div
-                class="col-12 row bg-light mb-2 rounded"
+                className="col-12 row bg-light mb-2 rounded p-0 text-center"
                 style={{ height: "auto" }}
               >
                 {this.state.postImg!==null?this.state.postImg.map(item=>
-                <img class="col-6" src={item} alt="dp2" />):null}
+                <img key={Math.random()} className="col-5 border-1 p-0 m-1" src={item} alt="dp2" />):null}
               </div>
             </div>
 
@@ -392,171 +387,6 @@ class Profile extends PureComponent {
                 :null
               }
             </div>
-            </div>
-            {/* <div class="col-7 full " style={{ marginTop: "5rem" }}>
-              <div class="col-12 m-auto bg-light rounded p-0  ">
-                <div class="container-fluid border-bottom lightgray pt-1 rounded-top">
-                  <h6>Create post</h6>
-                </div>
-                <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto border-bottom">
-                  <img
-                    src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                    alt=""
-                    class="col-1 rounded-circle p-0 ml-3"
-                  />
-                  <div class="col-10">
-                    <form class="form col-12">
-                      <textarea
-                        name="newpost"
-                        cols="30"
-                        rows="10"
-                        class="form-control col-12 border-0 rounded-0 bg-light"
-                        placeholder="Write something here"
-                      ></textarea>
-                    </form>
-                  </div>
-                </div>
-                <div class="col-12 row container p-1 m-auto text-center justify-content-center">
-                  <div class="col-4 lightgray text-dard round m-1">
-                    <i class="fa fa-file-image-o"></i>
-                    <p class="small d-inline">Image/Video</p>
-                  </div>
-                  <div class="col-4 lightgray text-dard round m-1">
-                    <i class="fa fa-user-plus"></i>
-                    <p class="small d-inline">Tag friends</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-light hid rounded mt-2">
-                <div class="container-fluid border-bottom lightgray pt-1 rounded-top pb-1 pl-2 row m-auto">
-                  <img
-                    class="col-1 rounded-circle p-0 ml-3"
-                    src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                    alt="img"
-                  />
-                  <div class="col-10">
-                    <p class="small">Manas</p>
-                    <p class="extra_small">Posted on 6 Dec 2018</p>
-                  </div>
-                </div>
-                <div
-                  class="col-12 border-bottom p-0 "
-                  style={{ marginLeft: "25%" }}
-                >
-                  <img
-                    style={{
-                      height: "40vh",
-                      width: "40vh",
-                      border: "white 4px solid",
-                    }}
-                    class="col-12 m-0 p-0 rounded-circle "
-                    src="https://images.pexels.com/photos/1141792/pexels-photo-1141792.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                  />
-                </div>
-                <div class="col-12 border-bottom row m-auto p-2 text-center">
-                  <div class="col-6">
-                    <p class="small">200 Likes</p>
-                  </div>
-                  <div class="col-6">
-                    <p class="small">200 Comments</p>
-                  </div>
-                </div>
-                <div class="col-12 p-0 border-bottom row m-auto">
-                  <div class="col-6 p-1 text-center">
-                    <i class="fa fa-thumbs-o-up"></i>
-                    Like
-                  </div>
-                  <div class="col-6 p-1 text-center">
-                    <i class="fa fa-comment-o"></i>
-                    comment
-                  </div>
-                </div>
-                <div class="col-12 p-0 pb-3">
-                  <p class="pl-4 mb-2">View Comment</p>
-                  <div class="col-12 row m-auto pb-2">
-                    <img
-                      class="col-1 rounded-circle p-0 ml-3"
-                      src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                      alt="img"
-                    />
-                    <form class="ml-2 form form-inline lightgray col-10 round hid">
-                      <input
-                        class="form-control border-0 col-11 transparent"
-                        name="comment"
-                        placeholder="Write a comment"
-                      />
-                      <button class="btn rounded-0 transparen text-primary col-1">
-                        <i class="fa fa-paper-plane"></i>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-          </div>
-
-          {/* <!-- third column --> */}
-          <div class="col-3 full">
-            <div class="container col-12 m-auto bg-light mb-2">
-              <strong>
-                <p class="text-secondary">Friend Request</p>
-              </strong>
-              <hr />
-              <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
-                <img
-                  src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                  alt=""
-                  class="col-3 bg-secondary rounded-circle p-0"
-                />
-                <div class="col-9">
-                  <p class="text-secondary">ManasRanjan</p>
-                  <p class="text-secondary" style={{ fontSize: "10px" }}>
-                    From Jamshedpur
-                  </p>
-                </div>
-                <div class="row col-12 p-1 m-auto justify-content-between">
-                  <div
-                    class="col-5 bg-primary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    class="col-5 bg-secondary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
-              <div class="row col-12 pt-2 pl-2 pb-2 bg-light m-auto">
-                <img
-                  src="https://www.w3schools.com/bootstrap4/img_avatar3.png"
-                  alt=""
-                  class="col-3 bg-secondary rounded-circle p-0"
-                />
-                <div class="col-9">
-                  <p class="text-secondary">ManasRanjan</p>
-                  <p class="text-secondary" style={{ fontSize: "10px" }}>
-                    From Jamshedpur
-                  </p>
-                </div>
-                <div class="row col-12 p-1 m-auto justify-content-between">
-                  <div
-                    class="col-5 bg-primary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    class="col-5 bg-secondary rounded text-light pt-1 pb-1"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

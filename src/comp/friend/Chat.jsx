@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import  ChatWindow  from './ChatWindow'
 import withState from '../hoc/withState'
-import {connect} from 'react-redux'
-import {getFriend,setChat} from '../../redux/action/action'
+// import {connect} from 'react-redux'
+// import {getFriend,setChat} from '../../redux/action/action'
 
 class Chat extends Component {
     constructor(props) {

@@ -149,35 +149,37 @@ class Nav extends Component {
             let friend = false
             let check = this.props.friendId.find(d=>d===e._id)
             if(check!==undefined){friend=true}
-            return (
-            <div key={Math.random()} 
-            className="card bg-light text-dark text-center rounded-0 col-12 pl-4 pr-2">
-                <div className="card-body p-2 row justify-content-between col-12">
-                    <p className='d-inline'>{`${e.firstname} ${e.lastname}`}</p>
-                    <div className='row btn-group'>
-                    {friend===false?<button 
-                    className='btn btn-success btn-sm' 
-                    onClick={()=>{
-                            this.props.sendRequest()
-                            this.props.socket.emit("friendRequest",{
-                            to:e._id,
-                            from:this.props.userid,
-                            time:(new Date()).toLocaleString})
-                        }
-                    }
-                    >Send request</button>:null
-                    }
-                    <Link to='/profile'
-                    className='btn btn-danger btn-sm'
-                    onClick={()=>{
-                        console.log(`${e._id} ${this.props.userid}`)
-                        this.props.delProfile()
-                        this.props.getProfile(e._id)
-                    }} 
-                    >Visit profile</Link>
-                    </div>
-                </div>
-            </div>)
+            if(e._id!==this.props.userid){
+                return (
+                    <div key={Math.random()} 
+                    className="card bg-light text-dark text-center rounded-0 col-12 pl-4 pr-2">
+                        <div className="card-body p-2 row justify-content-between col-12">
+                            <p className='d-inline'>{`${e.firstname} ${e.lastname}`}</p>
+                            <div className='row btn-group'>
+                            {friend===false?<button 
+                            className='btn btn-success btn-sm' 
+                            onClick={()=>{
+                                    this.props.sendRequest()
+                                    this.props.socket.emit("friendRequest",{
+                                    to:e._id,
+                                    from:this.props.userid,
+                                    time:(new Date()).toLocaleString})
+                                }
+                            }
+                            >Send request</button>:null
+                            }
+                            <Link to='/profile'
+                            className='btn btn-danger btn-sm'
+                            onClick={()=>{
+                                console.log(`${e._id} ${this.props.userid}`)
+                                this.props.delProfile()
+                                this.props.getProfile(e._id)
+                            }} 
+                            >Visit profile</Link>
+                            </div>
+                        </div>
+                    </div>)
+            }else{return null}
         }):null}
         </div>
         </div>

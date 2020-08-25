@@ -72,7 +72,7 @@ function Audioapp(props){
             setSocket(props.curChat.socketid)
           }
     }
-  }, [props.socket,users,props.curChat]);
+  }, [props.socket,users,props.curChat,setCallAccepted, setCaller, setCallerSignal, setReceivingCall, setSocket, setStream, setUsers, setYourID]);
 
   const peer = new Peer({
     initiator: false,
@@ -221,6 +221,7 @@ function Audioapp(props){
               <button key={Math.random()} onClick={() => callPeer(key)}>Call {key}</button>
             );
           }
+          return null
         }):null}
       </Row>
       <Row>

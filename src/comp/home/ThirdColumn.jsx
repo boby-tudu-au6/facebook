@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import FriendRequest from './FriendRequest'
 import OnlineFriend from './OnlineFriend'
-import { connect } from 'react-redux'
 import withState from '../hoc/withState'
 
 

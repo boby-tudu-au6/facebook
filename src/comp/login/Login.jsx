@@ -38,16 +38,20 @@ class Login extends Component {
             firstdata = 'email'
             secdata = 'phone'
         }
-        const {data} = await Axios.post(`${baseurl}/register`,{
-            [firstdata]:phoneEmail.value,
-            [secdata]:"",
-            firstname:firstname.value,
-            lastname:lastname.value,
-            password:password.value,
-            birthday:birthday.value,
-            gender:gender.value
-        })
-        alert("register done")
+        try{
+            await Axios.post(`${baseurl}/register`,{
+                [firstdata]:phoneEmail.value,
+                [secdata]:"",
+                firstname:firstname.value,
+                lastname:lastname.value,
+                password:password.value,
+                birthday:birthday.value,
+                gender:gender.value
+            })
+            alert("register done")
+        }catch(err){
+            alert("registration failed, check values provided")
+        }
     }
     render() {
         return (

@@ -88,7 +88,7 @@ function Videoapp(props){
             setSocket('')
           }
     }
-  }, [props.socket,users,props.curChat]);
+  }, [props.socket,users,props.curChat,setCallAccepted, setCaller, setCallerSignal, setReceivingCall, setSocket, setStream, setUsers, setYourID]);
 
   
   function callPeer(id) {
@@ -227,6 +227,7 @@ function Videoapp(props){
               <button key={Math.random()} onClick={() => callPeer(key)}>Call {key}</button>
             );
           }
+          return null
         }):null}
       </Row>
       <Row>

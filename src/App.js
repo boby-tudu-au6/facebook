@@ -8,7 +8,6 @@ import Login from './comp/login/Login';
 import { connect } from 'react-redux';
 import {checkLogin} from './redux/action/action'
 import Profile from './comp/Profile/Profile'
-import Post from './comp/post/Post'
 
 import '../node_modules/antd/dist/antd.css'
 import withState from './comp/hoc/withState';
@@ -21,7 +20,6 @@ function App(props) {
       <Switch>
       <Route exact path='/' component={Home}/>
         <Route exact path='/messages' component={Chat}/>
-        <Route exact path='/tes1' component={Post}/>
         {props.userid!==null?
         <Route exact path='/profile' component={Profile}/>:<Redirect to='/'/>}
       </Switch>

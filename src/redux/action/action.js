@@ -28,19 +28,11 @@ export const DEL_FILE_ITEM = 'DEL_FILE_ITEM'
 export const DEL_PROFILE = 'DEL_PROFILE'
 export const DIS_SET_CHAT = 'DIS_SET_CHAT'
 export const CLOSE_MEDIA = 'CLOSE_MEDIA'
-
-
-
-
 export const baseurl = "http://localhost:8080"
 
 export const getProfile = payload =>async dispatch=>{
-    const {data} = await Axios.post(`${baseurl}/getprofile`,{userid:payload})
-    // Axios({
-    //     url:"",
-    //     headers:{token},
-    //     data:data
-    // })
+    const {data} = await Axios.post(`${baseurl}/getprofile`,
+    {userid:payload})
     return dispatch({
         type:GET_PROFILE,
         payload:data
@@ -56,38 +48,45 @@ export const doLogin = ({phoneEmail,password}) => async dispatch =>{
         if(testdata!==-1){
             firstdata = 'email'
         }
-        const {data} = await Axios.post(`${baseurl}/login`,{
-            [firstdata]:phoneEmail.value,
-            password:password.value
-        })
-        if(data.data!==undefined){
-            localStorage.setItem("user",data.token)
-            return dispatch({
-                type:DO_LOGIN,
-                payload:data
+        try{
+            const {data} = await Axios.post(`${baseurl}/login`,{
+                [firstdata]:phoneEmail.value,
+                password:password.value
             })
+            if(data.data!==undefined){
+                localStorage.setItem("user",data.token)
+                return dispatch({
+                    type:DO_LOGIN,
+                    payload:data
+                })
+            }
+            alert("login failed")
+        }catch(err){
+            console.log("login failed")
         }
-        alert("login failed")
 }
 export const checkLogin =()=>async dispatch=>{
     try{
         const user = localStorage.getItem('user')
         if(user){
-            const {data} = await Axios.post(`${baseurl}/checklogin`,
-            {user},
-            {
-                headers:{
-                    token:localStorage.getItem("user"),
-                    'Content-Type': 'application/json'
-                }
-            })
-            const username = data[0].firstname
-            const userid = data[0]._id
-            const profilePic = data[0].profilePic
-            const coverImg = data[0].coverImg
-            return dispatch({type:CHECK_LOGIN,payload:{
-                user,username,userid,profilePic,coverImg
-            }})
+                const {data} = await Axios.post(`${baseurl}/checklogin`,
+                {user},{
+                    headers:{
+                        token:localStorage.getItem("user"),
+                        'Content-Type': 'application/json'
+                    }
+                })
+            if(data[0]!==undefined){
+                const username = data[0].firstname
+                const userid = data[0]._id
+                const profilePic = data[0].profilePic
+                const coverImg = data[0].coverImg
+                return dispatch({type:CHECK_LOGIN,payload:{
+                    user,username,userid,profilePic,coverImg
+                }})
+            }else{
+                console.log('invalid token')
+            }
         }
     }catch(err){
         console.log('invalid token')
@@ -178,7 +177,13 @@ export const updateRequest = payload => dispatch =>{
 }
 export const getFriend = userid =>async dispatch =>{
     try{
-        const {data} = await Axios.post(`${baseurl}/getfriend`,{_id:userid})
+        const {data} = await Axios.post(`${baseurl}/getfriend`,
+        {_id:userid},{
+            headers:{
+                token:localStorage.getItem("user"),
+                'Content-Type': 'application/json'
+            }
+        })
         if(data!==null){
             return dispatch({
                 type:GET_FRIEND,
@@ -196,7 +201,13 @@ export const sendRequest = ()=>dispatch=>{
 }
 export const delChatId = (payload)=>async dispatch=>{
     try{
-        await Axios.post(`${baseurl}/delchat`,{userid:payload})
+        await Axios.post(`${baseurl}/delchat`,
+        {userid:payload},{
+            headers:{
+                token:localStorage.getItem("user"),
+                'Content-Type': 'application/json'
+            }
+        })
         return dispatch({type:DEL_CHAT_ID})
     }catch(err){
         console.log("invalid token")
@@ -211,7 +222,13 @@ export const startAudio = () =>dispatch=>{
 }
 export const getPost = ({userid,page}) => async dispatch =>{
     try{
-        const {data} = await Axios.post(`${baseurl}/getpost`,{userid,page})
+        const {data} = await Axios.post(`${baseurl}/getpost`,
+        {userid,page},{
+            headers:{
+                token:localStorage.getItem("user"),
+                'Content-Type': 'application/json'
+            }
+        })
         return dispatch({
             type:GET_POST,
             payload:data
