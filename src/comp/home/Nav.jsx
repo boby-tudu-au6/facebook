@@ -34,6 +34,7 @@ class Nav extends Component {
             this.props.getPost({userid:this.props.userid,page:this.props.pageid})
         }
         this.props.history.listen((location)=>{
+            this.props.searchFriend('')
             if(location.pathname!=='/messages'){
                 if(this.props.curChat!==null){
                     this.state.socket.emit("leaveroom",{room:this.props.curChat.room})
@@ -171,7 +172,6 @@ class Nav extends Component {
                             <Link to='/profile'
                             className='btn btn-danger btn-sm'
                             onClick={()=>{
-                                console.log(`${e._id} ${this.props.userid}`)
                                 this.props.delProfile()
                                 this.props.getProfile(e._id)
                             }} 
@@ -213,11 +213,11 @@ class Nav extends Component {
         {this.props.unseenpost!==0?
             <div style={{position:"absolute"}}>
                 <span 
-                className="badge-danger rounded" 
+                className="badge-danger rounded p-1" 
                 style={{
                     position:'absolute',
                     left:'30px',
-                    padding:"3px"
+                    fontSize:"10px"
                 }}>{this.props.unseenpost}</span>
             </div>
         :null}

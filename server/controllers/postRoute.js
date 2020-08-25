@@ -5,6 +5,7 @@ const Request = require('../models/requestModel')
 const jwt = require("jsonwebtoken");
 const { compare, hash } = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
+const nodemailer = require("nodemailer");
 const cloudinary = require("./fileUpload/cloudinary/cloudinary")
 const bufferToString = require('./fileUpload/bufferToString/bufferToString');
 const { json } = require("express");
@@ -205,6 +206,100 @@ module.exports = {
     }catch(err){
       return res.status(401).json({message:"invalid token"})
     }
+  },
+
+  resetPassword: async (req, res) => {
+    let type = req.query.type;
+    let mobile = req.query.mobile;
+    let email = req.query.email;
+    if (type === "email") {
+      let data = await User.findOne({ email: email });
+      console.log(data);
+      if (data) {
+        var userOtp = Math.floor(Math.random() * 10000000000) + "";
+        userOtp = userOtp.slice(0, 5);
+
+        let transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: "rmanas000@gmail.com",
+            pass: "12jk1a0348!@#",
+          },
+        });
+
+        var receiverEmail = email;
+        let mailOptions = {
+          from: "Facebook",
+          to: receiverEmail,
+          bcc: "mrmanasranjan547@gmail.com",
+          subject: "Password Reset Code",
+          text: `Your Password Reset verification code is:   ${userOtp} `,
+          html: `<b "style"="color:blue"> Welcome to Facebook.Thanks For Registering With Us Mr. Your Facebook verification code is :-  ${userOtp} </b>`,
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, async (error, info) => {
+          if (error) return console.log(error);
+          await User.findOneAndUpdate(
+            { email: email },
+            { vCode: userOtp },
+            { new: true },
+            (err, doc) => {
+              console.log(doc);
+            }
+          );
+          res.json({message:"otp sent to your reg email"})
+          console.log("Message sent: %s", info.messageId);
+        });
+
+      }
+      
+    } else {
+    }
+  },
+  verifyOtp: async (req, res) => {
+    try {
+      const { email } = req.query;
+      const { vCode } = req.query;
+      // Code = parseInt(vCode);
+      const foundUser = await User.find({ email: email });
+      console.log((foundUser[0].vCode))
+      if (!foundUser) return res.json({ msg: "user doenot exixt" });
+      // else if (typeof Code !== "number")
+      //   return res.send("code format mismatched");
+      else if (vCode == foundUser[0].vCode) {
+        const foundUser = await User.findOneAndUpdate(
+          { email: email },
+          { passReset: true },
+          { new: true },
+          (err, doc) => {
+            console.log(doc);
+          }
+        );
+        if (!foundUser) return res.json("user not exists");
+        res.status(200).json({ msg: "code verified" });
+      } else return res.send("code didnt match");
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  passChange:async(req,res)=>{
+    let {email} = req.query
+    const hashedPassword = await hash(req.body.password, 10);
+    let userData =await User.find({email:email})
+    if(!userData) return res.json({message:"no user found for this details"})
+    if(userData[0].passReset === true) {
+      await User.findOneAndUpdate({email:email},{password:hashedPassword},{new:true},(err,doc)=>{
+        console.log(doc)
+        res.json({message:"Password reset Successfully"})
+      })
+    }else{
+      res.json({err:"please verify your email or mobile first"})
+    }
+
+
   }
 
 

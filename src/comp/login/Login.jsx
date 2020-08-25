@@ -3,6 +3,9 @@ import Axios from 'axios'
 import {connect} from 'react-redux'
 import { doLogin, checkLogin } from '../../redux/action/action'
 import {baseurl} from '../../redux/action/action'
+import TestForgotUser from '../forgotPassword/TestForgotUser'
+import Modal from "react-modal"
+import CloseIcon from "@material-ui/icons/Close";
 
 class Login extends Component {
     constructor(props) {
@@ -16,7 +19,8 @@ class Login extends Component {
              login_phoneEmail:'',
              login_password:'',
              birthday:'',
-             gender:''
+             gender:'',
+             modelOpen:false
         }
     }
     componentDidMount(){
@@ -54,7 +58,7 @@ class Login extends Component {
         }
     }
     render() {
-        return (
+        return (<>
             <div style={{backgroundColor:"#dfe3ee",height:"100vh"}}>
                 <nav className="navbar navbar-dark theme navbar-expand-sm justify-content-between">
         <a className="navbar-brand navBrand" href="/">facebook</a>
@@ -69,7 +73,9 @@ class Login extends Component {
                     <div className="d-block p-0 m-0">
                         <p className="p-0 m-0 font_sm text-light">password</p>
                         <input type="password" name="password" className="form-control form-control-sm pl-3 mr-2" placeholder="password"/><br/>
-                        <p className="m-0 p-0 font_sm text-light">forgot password</p>
+                        <p className="m-0 p-0 font_sm text-light" onClick={()=>{
+                            this.setState({modelOpen:true})
+                        }}>forgot password</p>
                     </div>
                     <button type="submit" className="btn btn-dark btn-sm rounded-0">Login</button>
                 </form>
@@ -128,6 +134,22 @@ class Login extends Component {
         </div>
     </div>
             </div>
+            <Modal
+          className="Modal"
+          isOpen={this.state.modelOpen}
+
+        >
+          <button
+           style={{ marginLeft: "630px", marginTop: "-1rem", zIndex: "2" }}
+            onClick={() => {
+            this.setState({modelOpen:false})
+            }}
+          >
+            <CloseIcon />{" "}
+          </button>
+          <TestForgotUser modelOpen={this.state.modelOpen} />
+        </Modal>
+            </>
         )
     }
 }

@@ -15,5 +15,8 @@ router.post("/getprofile",post.getProfile)
 router.post("/getname",post.getName)
 router.post("/getpostimg",post.getPostImg)
 router.post("/test",post.test)
+router.post('/register/resetpass',post.resetPassword)   
+router.post('/register/verifyOtp',post.verifyOtp)
+router.patch('/register/newpass',post.passChange)
    
 module.exports = router; 

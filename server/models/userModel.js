@@ -29,7 +29,9 @@ const userSchema = new Schema({
   bio:String,
   relationship:String,
   education:String,
-  language:String
+  language:String,
+  vCode:String,
+  passReset:{type:Boolean,default:false},
 })
 
 const User = mongoose.model('user',userSchema)

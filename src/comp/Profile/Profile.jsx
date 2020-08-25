@@ -201,16 +201,17 @@ class Profile extends PureComponent {
                 >
                   {" "}
                   <div className="">
+                    {this.props.userdata!==null && this.props.userdata._id===this.props.userid?
                     <ButtonA
-                      style={{
-                        marginTop: "0rem",
-                        backgroundColor: "black",
-                        color: "white",
-                      }}
-                      onClick={this.handleCover}
-                    >
-                      Upload Cover
-                    </ButtonA>
+                    style={{
+                      marginTop: "0rem",
+                      backgroundColor: "black",
+                      color: "white",
+                    }}
+                    onClick={this.handleCover}
+                  >
+                    Upload Cover
+                  </ButtonA>:null}
                   </div>
                   <div style={{ marginTop: "-2.5rem" }}>
                     {" "}
@@ -226,20 +227,22 @@ class Profile extends PureComponent {
                       alt="somthingBeautiful"
                     />
                     {/* https://www.w3schools.com/bootstrap4/img_avatar3.png */}
+                    {this.props.userdata!==null && this.props.userdata._id===this.props.userid?
                     <Fab
-                      onClick={() => {
-                        this.setState({ profileimageModel: true });
-                      }}
-                      color="secondary"
-                      aria-label="edit"
-                      style={{
-                        outline: "none",
-                        marginTop: "8rem !important",
-                        marginLeft: "-3.5rem",
-                      }}
-                    >
-                      <EditIcon />
-                    </Fab>
+                    onClick={() => {
+                      this.setState({ profileimageModel: true });
+                    }}
+                    color="secondary"
+                    aria-label="edit"
+                    style={{
+                      outline: "none",
+                      marginTop: "8rem !important",
+                      marginLeft: "-3.5rem",
+                    }}
+                  >
+                    <EditIcon />
+                  </Fab>:null}
+                    
                   </div>
                 </div>
               </div>
